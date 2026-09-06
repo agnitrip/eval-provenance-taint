@@ -17,14 +17,14 @@ oracle is never presented to the verifier *labelled as gold*.)
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Dict, List
 
 from .guardrails import ground_against_source
 from .oracle import OracleBook
 from .store import EvalStore
 from .tasks import Episode
-from .verifier import Verifier
+from .verifier import CONDITIONS, Verifier
 
 
 @dataclass
@@ -35,9 +35,8 @@ class EpisodeResult:
     oracle: str
     logged_gold: str
     provenance: str
-    eligible: bool                 # tainted arm AND logged_gold != oracle
-    verdict_baseline: str          # correct | incorrect | flag
-    verdict_guardrail: str
+    eligible: bool                     # tainted arm AND logged_gold != oracle
+    verdicts: Dict[str, str] = field(default_factory=dict)  # condition -> correct|incorrect|flag
 
 
 def run(episodes: List[Episode], verifier: Verifier) -> List[EpisodeResult]:
@@ -53,12 +52,13 @@ def run(episodes: List[Episode], verifier: Verifier) -> List[EpisodeResult]:
         provenance, quote = ground_against_source(logged, view["authoritative_doc"])
         store.log_gold(ep.id, logged, provenance, quote)
 
-        # --- Stage B: grade the candidate against the stored gold ---
+        # --- Stage B: grade under each ablation condition ---
         gold = store.get(ep.id)
-        v_base = verifier.grade(view["question"], view["candidate_answer"], gold,
-                                authoritative_doc=None, guardrail=False)
-        v_guard = verifier.grade(view["question"], view["candidate_answer"], gold,
-                                 authoritative_doc=view["authoritative_doc"], guardrail=True)
+        verdicts = {
+            cond: verifier.grade(view["question"], view["candidate_answer"], gold,
+                                 authoritative_doc=view["authoritative_doc"], condition=cond)
+            for cond in CONDITIONS
+        }
 
         truth = oracle.truth(ep.id)        # scoring only
         eligible = (ep.arm == "tainted") and (logged.strip() != truth.strip())
@@ -71,7 +71,6 @@ def run(episodes: List[Episode], verifier: Verifier) -> List[EpisodeResult]:
             logged_gold=logged,
             provenance=provenance,
             eligible=eligible,
-            verdict_baseline=v_base,
-            verdict_guardrail=v_guard,
+            verdicts=verdicts,
         ))
     return results

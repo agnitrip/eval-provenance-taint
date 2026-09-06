@@ -35,18 +35,27 @@ def test_mock_end_to_end():
     v = verifier_mod.MockVerifier()
     results = run(episodes, v)
     s = summarize(results)
+    c = s["conditions"]
 
-    # The mock faithfully extracts the (wrong) distractor value on tainted episodes, so every
-    # tainted episode is eligible, and the baseline grader defers to the tainted gold.
-    assert s["counts"]["eligible_tainted"] > 0
+    # Every tainted episode is eligible (mock extracts the distractor value).
+    assert s["counts"]["eligible_tainted"] == 24
     assert s["eligibility_rate_tainted"] == 1.0
-    assert s["taint_adoption_rate_baseline"] == 1.0          # baseline adopts taint
-    assert s["taint_adoption_rate_guardrail"] == 0.0         # guardrail stops adoption
-    assert s["guardrail_recall"] == 1.0                      # prevents adoption on every eligible case
-    assert s["guardrail_flag_rate"] == 1.0                   # mock catches via explicit flag
-    assert s["false_alarm_rate"] == 0.0                      # no false alarms on clean controls
-    assert s["clean_baseline_correct_rate"] == 1.0
-    print("mock summary OK:", s)
+
+    # Baseline defers to the tainted gold; the ablation conditions each stop adoption.
+    assert c["baseline"]["taint_adoption"]["p"] == 1.0
+    for cond in ("tag_only", "source_only", "guardrail"):
+        assert c[cond]["taint_adoption"]["p"] == 0.0
+        assert c[cond]["prevented_adoption"]["p"] == 1.0
+    # tag_only and guardrail catch via explicit flag in the mock.
+    assert c["tag_only"]["flag_rate"] == 1.0
+    assert c["guardrail"]["flag_rate"] == 1.0
+    # No false alarms on clean controls in any condition.
+    for cond in c:
+        assert c[cond]["false_alarm"]["p"] == 0.0
+    # Wilson interval sanity: adoption CI brackets the point estimate.
+    b = c["baseline"]["taint_adoption"]
+    assert b["lo"] <= b["p"] <= b["hi"] and b["n"] == 24
+    print("mock ablation OK")
 
 
 if __name__ == "__main__":
