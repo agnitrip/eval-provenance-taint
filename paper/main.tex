@@ -1,0 +1,262 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{url}
+\usepackage[hidelinks]{hyperref}
+
+\begin{document}
+
+\title{Measuring Eval-Set Self-Poisoning: A Synthetic Benchmark for Provenance Taint in
+On-Device Verifier Pipelines}
+
+\author{\IEEEauthorblockN{Agni Tripathi}
+\IEEEauthorblockA{Independent Researcher\\
+agnitripathi2022@kelloggalumni.northwestern.edu}}
+
+\maketitle
+
+\begin{abstract}
+On-device agentic systems increasingly gate their own actions with a local verifier that records
+a reference answer and later grades against it. We study a failure that lives inside a single such
+pipeline: a verifier writes its own model-mediated inference into an evaluation log, that value is
+promoted to ``gold'' without provenance discipline, and a downstream gold-dependent decision then
+consumes it as ground truth. We call this eval-set self-poisoning through provenance taint. We
+build a fully synthetic, self-contained benchmark that induces the failure under controlled
+conditions and measures it with a real large language model verifier whose decisions are scored
+against an immutable oracle held outside the writable pipeline. On matched tainted and clean
+episodes with explicit provenance identifiers, we report a taint-adoption rate (how often the
+grader follows the self-authored value against the oracle), and the recall and false-alarm cost of
+a provenance-tag plus quote-source guardrail. Across two models the baseline grader adopts the
+self-authored value in a large fraction of eligible episodes, and the guardrail removes most
+adoption at a measurable false-alarm cost on clean controls. All results are bounded to the
+synthetic pipeline and the models tested; we make no claim about real-world prevalence. The
+benchmark and harness are released as a reproducible artifact.
+\end{abstract}
+
+\begin{IEEEkeywords}
+LLM-as-judge, verifier reliability, evaluation integrity, provenance, on-device agents,
+trustworthy AI
+\end{IEEEkeywords}
+
+\section{Introduction}
+On-device agentic AI runs its evaluation loop close to the action. A local verifier reads context,
+records a reference answer for a task, and later grades a candidate against that record. The record
+is convenient. It is also dangerous, because the verifier authored it.
+
+We study a specific failure inside one pipeline pass. In a first step the verifier records a
+reference (``gold'') answer from provided material, as a retrieval-grounded verifier would. When
+that material is imperfect, the recorded value is wrong. With no discipline about where the value
+came from, a provisional, model-inferred reading is promoted to ground truth. In a second step a
+downstream gold-dependent decision grades a candidate against the stored value and, if it defers to
+the record, marks a correct candidate wrong. The pipeline is now deferring to a value the pipeline
+itself wrote. We call this eval-set self-poisoning through provenance taint.
+
+Model collapse describes a training-scale process, and judge leakage involves two related models.
+The failure here needs only one verifier inside one pass: author, store, consume. The question we
+ask is empirical. Given a real verifier and an imperfect logging step, how often does a
+self-authored value get adopted as ground truth, and does a lightweight provenance guardrail catch
+it without wrecking clean cases?
+
+We make three contributions.
+\begin{itemize}
+\item A fully synthetic, self-contained benchmark that induces provenance taint under controlled,
+matched conditions with explicit provenance identifiers, and an immutable external oracle that is
+architecturally held outside the writable pipeline.
+\item A measurement protocol whose central number, the taint-adoption rate, is a real verifier's
+decision scored against the oracle, not a scripted rate, together with the recall and false-alarm
+cost of a provenance-tag plus quote-source guardrail on clean controls.
+\item An empirical result across two models showing that the failure is inducible and measurable,
+and that a simple guardrail trades adoption against false alarms. All claims are bounded to the
+tested synthetic pipeline and models.
+\end{itemize}
+
+\section{Related Work and Distinction}
+Adjacent contamination loops are documented, but not the within-pipeline log-to-eval-key mechanism
+measured here.
+
+\textbf{Self-authored evidence and model collapse.} RAG Collapse shows responses degrade when
+retrieved documents are self-authored~\cite{ragcollapse}, an analogue at the retrieval layer rather
+than the evaluation key. Epidemiological modeling of model collapse studies training-scale
+synthetic-data contamination~\cite{modelcollapse}. Neither concerns a verifier writing its own
+inference into a gold record and consuming it within one pass.
+
+\textbf{Judge contamination and self-preference.} Preference Leakage identifies contamination when a
+judge and a data generator are related~\cite{prefleak}. That is a cross-model effect; our taint is
+intra-pipeline and requires only one verifier.
+
+\textbf{Oracle faults in synthetic judging.} The Test Oracle Problem in synthetic LLM-as-judge
+corpora shows generator faults can distort or erase the intended signal~\cite{oracleproblem}, and
+work auditing feedback-driven evolution shows a generated single-reference oracle can inflate
+measured gains~\cite{feedbackevo}. These concern faults in how the oracle or corpus is generated. We
+instead hold the oracle fixed and measure whether a self-authored value is adopted against it.
+
+\textbf{Self-poisoning of agent artifacts.} EVOMAL demonstrates self-poisoning of a shared
+coding-agent skill library, where malicious skills propagate through retrieve-and-imitate
+loops~\cite{evomal}. The object there is a shared skill library. Our failure concerns an
+evaluation key that a downstream decision consumes as gold.
+
+\textbf{Construction-side avoidance.} Ground Truth First inverts benchmark construction so gold
+facts are emitted before any model text, validated by a fidelity verifier, which avoids self-poisoning
+by design~\cite{groundtruthfirst}. This is complementary. It prescribes how to build a clean
+benchmark; it does not provide an instrument that measures the failure when a pipeline is not built
+gold-first. Our benchmark is that instrument.
+
+In short, prior work either documents adjacent loops or avoids the failure by construction. We
+provide a controlled measurement of how often a real verifier's self-authored value is adopted as
+ground truth against a held-out oracle, and how well a provenance guardrail catches it.
+
+\section{Benchmark Design}
+
+\subsection{Episodes}
+Each episode is a deterministic, recomputable task with an unambiguous answer: modular arithmetic,
+unit conversion at a synthetic rate, base conversion, and arithmetic-sequence terms. Values are
+multi-step, which places the verifier in the realistic regime where it leans on provided reference
+material rather than recomputing. Episodes are emitted as item-matched pairs: for every drawn task
+we produce both a \emph{tainted} and a \emph{clean-control} episode from the same question, oracle,
+and candidate, so the only difference between the two arms is the Stage-A reference material. In the
+tainted arm that material contains a distractor asserting a specific wrong value; in the clean-control
+arm it is authoritative. Because the pairing is item-for-item, each template appears equally in both
+arms, and adoption and false-alarm are measured on the same task distribution. Everything is synthetic
+and seeded.
+
+\subsection{Two-stage pipeline}
+\textbf{Stage A, reference logging (writable).} The verifier records a gold value from the Stage-A
+material. The logged value is then grounded against the authoritative source: it is tagged
+\texttt{source-grounded} with a verbatim quote only if the source states exactly that value, and
+\texttt{model-inferred} otherwise. The tagged value is written to a writable store with a provenance
+identifier. A verifier that logs a wrong value from imperfect context is therefore tagged
+\texttt{model-inferred} with no supporting quote, which is the signal the guardrail later uses.
+
+\textbf{Stage B, grading (the downstream decision).} The verifier grades a candidate, set to the
+true answer, against the stored gold under two conditions. \texttt{baseline} sees only the stored
+value. \texttt{guardrail} additionally sees the provenance tag and the authoritative source, and is
+instructed to trust the reference only if it is source-grounded and to distrust a model-inferred
+reference that conflicts with the source.
+
+\subsection{Oracle isolation}
+The oracle holds the true answer for every episode. It is built once, exposes read-only access, and
+is imported only by the scorer. The verifier and the writable store never import it and are never
+handed oracle values; the verifier sees only episode fields that exclude the oracle. The true answer
+does appear inside prompts, as the candidate under grading and inside the authoritative source the
+guardrail may consult, so the invariant we enforce is that the oracle is never presented to the
+verifier labelled as gold. This is enforced architecturally and checked by tests.
+
+\subsection{Metrics}
+All metrics are bounded to the synthetic pipeline and the tested model.
+\begin{itemize}
+\item \textbf{Eligibility rate.} Fraction of tainted episodes whose Stage-A logged value actually
+diverges from the oracle. Only eligible episodes can exhibit taint, so we report the rate rather
+than assume it.
+\item \textbf{Taint-adoption rate.} Fraction of eligible tainted episodes graded \texttt{incorrect},
+meaning the grader followed the self-authored wrong value and rejected the true candidate. Reported
+under baseline and guardrail. This is a real verifier decision.
+\item \textbf{Guardrail recall (prevented adoption).} Fraction of eligible tainted episodes the
+guardrail did not adopt, by grading \texttt{correct} from the source or by an explicit
+\texttt{flag}. We also report the stricter explicit-flag rate.
+\item \textbf{False-alarm rate.} On clean controls with correct, source-grounded gold, the fraction
+the guardrail wrongly rejects or flags. This is the guardrail's utility cost.
+\end{itemize}
+
+\section{Experimental Setup}
+We run the benchmark with two models as the verifier, Claude Haiku 4.5 and Claude Sonnet 4.6, at
+$n=80$ episodes each (40 item-matched tainted/clean pairs), seed fixed, temperature $0$. Each
+episode uses three verifier calls: one Stage-A logging call and two Stage-B grading calls (baseline
+and guardrail). The same model plays both stages, matching the single-pipeline setting. Reference
+material, distractors, and the oracle are identical across models, so any difference in the reported
+rates is a property of the verifier, not the data.
+
+\section{Results}
+
+\begin{table}[t]
+\caption{Provenance-taint measurements (synthetic pipeline, $n=80$ per model,
+40 item-matched tainted/clean pairs). All values are rates in $[0,1]$.}
+\label{tab:main}
+\centering
+\begin{tabular}{lcc}
+\toprule
+Metric & Haiku 4.5 & Sonnet 4.6 \\
+\midrule
+Eligibility (tainted) & 1.00 & 0.98 \\
+Taint-adoption, baseline & 0.93 & 0.95 \\
+Taint-adoption, guardrail & 0.00 & 0.00 \\
+Guardrail recall (prevented) & 1.00 & 1.00 \\
+Guardrail explicit-flag & 0.00 & 0.00 \\
+False-alarm (clean) & 0.08 & 0.00 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Table~\ref{tab:main} reports the main measurements. Under the baseline condition both verifiers
+adopt the self-authored value at a high rate: Haiku 4.5 in 0.93 of its 40 eligible episodes and
+Sonnet 4.6 in 0.95 of its 39. In these cases the grader rejects a candidate that matches the
+oracle, because the stored gold, which the pipeline itself wrote, disagrees with it. The grader had
+the question in hand and could have recomputed; under baseline it deferred to the record instead.
+Under the guardrail condition, adoption drops to zero for both models. The guardrail prevents
+adoption by recovering the correct answer from the authoritative source. Neither model used the
+explicit flag verdict, so prevented-adoption recall is 1.00 while the explicit-flag rate is zero
+for both verifiers. The discipline is not free. On clean controls, where the stored gold was correct and
+source-grounded, Haiku 4.5 wrongly rejects the reference in 0.08 of cases and Sonnet 4.6 in none.
+Eligibility is near one, so the induced taint almost always produced a divergent gold for the
+grader to adopt or resist; the rates above are therefore over 39 to 40 episodes per model, and we
+report them as an existence-and-magnitude result on this synthetic pipeline, not as population
+estimates.
+
+\section{Discussion}
+The result says three things about this synthetic pipeline. First, provenance taint is inducible:
+when the logging step reads imperfect material, the recorded gold diverges from the oracle, and a
+baseline grader that defers to the record propagates that divergence into a wrong grade. Second,
+the failure is a genuine model decision. The same episodes produce different adoption rates across
+models, which a scripted metric could not show. Third, a lightweight guardrail helps but is not
+free. Attaching a provenance tag and the source, and instructing the grader to distrust
+model-inferred references, prevents most adoption, but it raises false alarms on clean controls
+where the recorded gold was correct all along.
+
+The practical reading for on-device verifier pipelines is that a stored reference should carry its
+provenance, and a grader should be allowed to distrust a reference it or a peer authored. The cost
+of that discipline is a false-alarm rate that a deployment would need to tune.
+
+\section{Limitations}
+The benchmark is synthetic and small in scope. The tasks are deterministic arithmetic-style items
+chosen so the oracle is unambiguous, which is not representative of open-ended judging. The taint is
+induced through a distractor in the logging step, a controlled proxy for imperfect retrieved
+context. Every number is bounded to the tested pipeline and models. We make no estimate of how often
+provenance taint occurs in any deployed system; establishing prevalence would require instrumented
+field data, which this work does not have. The guardrail we test is deliberately simple, and its
+false-alarm cost should be read as an existence result about the tradeoff, not an optimized
+operating point.
+
+\section{Conclusion}
+We framed eval-set self-poisoning through provenance taint as a within-pipeline failure, built a
+self-contained synthetic benchmark that induces it, and measured it with a real verifier scored
+against an immutable oracle held outside the writable pipeline. The taint-adoption rate and the
+recall and false-alarm cost of a provenance guardrail give a first controlled instrument for a
+failure that adjacent work either documents in other settings or avoids by construction. The next
+step is to widen the task distribution beyond deterministic items and to study guardrails that keep
+the catch rate while lowering false alarms.
+
+\section*{Artifact and Reproducibility}
+The generator, oracle, verifier harness, guardrail, and scoring are released as a self-contained
+repository with a deterministic mock verifier for continuous integration and a real-provider mode.
+All content is synthetic.
+
+\begin{thebibliography}{00}
+\bibitem{ragcollapse} G. Druck and E. Smith, ``RAG Collapse: LLM Responses Collapse When Retrieved
+Documents Are Self-Authored,'' arXiv:2608.22118, 2026.
+\bibitem{modelcollapse} X. Wang, ``Epidemiology of Model Collapse: Modeling Synthetic Data
+Contamination via Bilayer SIR Dynamics,'' arXiv:2606.05168, 2026.
+\bibitem{prefleak} D. Li \emph{et al.}, ``Preference Leakage: A Contamination Problem in
+LLM-as-a-judge,'' in \emph{Proc. ICLR}, 2026. arXiv:2502.01534.
+\bibitem{oracleproblem} S. Ball\i, ``The Test Oracle Problem in Synthetic LLM-as-Judge Corpora:
+Disappearance, Distortion and a Validation Protocol,'' arXiv:2607.13707, 2026.
+\bibitem{feedbackevo} Y. Liang \emph{et al.}, ``Auditing and Decomposing Feedback-Driven Evolution
+in LLM Test Generation under the Oracle Problem,'' arXiv:2608.19626, 2026.
+\bibitem{evomal} X. Wu \emph{et al.}, ``EVOMAL: Self-Poisoning in Self-Evolving Coding Agents,''
+arXiv:2608.25776, 2026.
+\bibitem{groundtruthfirst} ``Ground Truth First: A Longitudinal Evaluation Instrument for Agent
+Memory,'' arXiv:2607.21962, 2026.
+\end{thebibliography}
+
+\end{document}

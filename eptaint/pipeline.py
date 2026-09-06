@@ -1,0 +1,77 @@
+"""The two-stage evaluation pipeline.
+
+Stage A (reference logging, writable): the verifier records a gold value from Stage-A material;
+the value is grounded against the authoritative source to assign a provenance tag, then written
+to the writable :class:`EvalStore`.
+
+Stage B (grading, the downstream gold-dependent decision): the verifier grades the candidate
+against the *stored* gold, under a ``baseline`` condition and a ``guardrail`` condition.
+
+Oracle isolation is architectural, not a string check. The verifier is only ever handed
+:meth:`Episode.pipeline_view` fields, which exclude ``oracle_answer``; the ``OracleBook`` is
+imported here for scoring only and is never passed into a verifier call. (Note: the true answer
+does legitimately appear inside prompts as the candidate under grading and inside the
+authoritative source the guardrail is allowed to consult — the invariant that matters is that the
+oracle is never presented to the verifier *labelled as gold*.)
+"""
+
+from __future__ import annotations
+
+from dataclasses import dataclass
+from typing import Dict, List
+
+from .guardrails import ground_against_source
+from .oracle import OracleBook
+from .store import EvalStore
+from .tasks import Episode
+from .verifier import Verifier
+
+
+@dataclass
+class EpisodeResult:
+    episode_id: str
+    template: str
+    arm: str
+    oracle: str
+    logged_gold: str
+    provenance: str
+    eligible: bool                 # tainted arm AND logged_gold != oracle
+    verdict_baseline: str          # correct | incorrect | flag
+    verdict_guardrail: str
+
+
+def run(episodes: List[Episode], verifier: Verifier) -> List[EpisodeResult]:
+    oracle = OracleBook(episodes)          # built once, read-only, outside the writable store
+    store = EvalStore()
+    results: List[EpisodeResult] = []
+
+    for ep in episodes:
+        view = ep.pipeline_view()          # no oracle_answer inside
+
+        # --- Stage A: log the reference from Stage-A material ---
+        logged = verifier.log_reference(view["question"], view["stage_a_doc"])
+        provenance, quote = ground_against_source(logged, view["authoritative_doc"])
+        store.log_gold(ep.id, logged, provenance, quote)
+
+        # --- Stage B: grade the candidate against the stored gold ---
+        gold = store.get(ep.id)
+        v_base = verifier.grade(view["question"], view["candidate_answer"], gold,
+                                authoritative_doc=None, guardrail=False)
+        v_guard = verifier.grade(view["question"], view["candidate_answer"], gold,
+                                 authoritative_doc=view["authoritative_doc"], guardrail=True)
+
+        truth = oracle.truth(ep.id)        # scoring only
+        eligible = (ep.arm == "tainted") and (logged.strip() != truth.strip())
+
+        results.append(EpisodeResult(
+            episode_id=ep.id,
+            template=ep.template,
+            arm=ep.arm,
+            oracle=truth,
+            logged_gold=logged,
+            provenance=provenance,
+            eligible=eligible,
+            verdict_baseline=v_base,
+            verdict_guardrail=v_guard,
+        ))
+    return results

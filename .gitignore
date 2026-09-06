@@ -1,0 +1,10 @@
+.venv/
+__pycache__/
+*.pyc
+results/*.json
+!results/.gitkeep
+.env
+
+# track the reported result files
+!results/haiku_n80.json
+!results/sonnet_n80.json
