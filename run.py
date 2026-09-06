@@ -20,7 +20,7 @@ from eptaint.verifier import make_verifier
 
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description="eval-provenance-taint synthetic benchmark")
-    ap.add_argument("--provider", choices=["mock", "anthropic"], default="mock")
+    ap.add_argument("--provider", choices=["mock", "anthropic", "openai"], default="mock")
     ap.add_argument("--model", default=None, help="model id for --provider anthropic")
     ap.add_argument("--n", type=int, default=40, help="number of episodes")
     ap.add_argument("--seed", type=int, default=7)
