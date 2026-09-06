@@ -1,0 +1,1695 @@
+{
+  "meta": {
+    "provider": "anthropic",
+    "model": "claude-sonnet-4-6",
+    "n": 80,
+    "seed": 17,
+    "verifier_calls": 400,
+    "scientific": true,
+    "note": "Real verifier decisions. Claims bounded to this synthetic pipeline/model."
+  },
+  "summary": {
+    "counts": {
+      "total": 80,
+      "tainted": 40,
+      "clean_control": 40,
+      "eligible_tainted": 40,
+      "clean_source_grounded": 40
+    },
+    "eligibility_rate_tainted": 1.0,
+    "conditions": {
+      "baseline": {
+        "taint_adoption": {
+          "p": 0.975,
+          "lo": 0.8712,
+          "hi": 0.9956,
+          "n": 40
+        },
+        "prevented_adoption": {
+          "p": 0.025,
+          "lo": 0.0044,
+          "hi": 0.1288,
+          "n": 40
+        },
+        "flag_rate": 0.0,
+        "false_alarm": {
+          "p": 0.0,
+          "lo": 0.0,
+          "hi": 0.0876,
+          "n": 40
+        }
+      },
+      "tag_only": {
+        "taint_adoption": {
+          "p": 0.15,
+          "lo": 0.0706,
+          "hi": 0.2907,
+          "n": 40
+        },
+        "prevented_adoption": {
+          "p": 0.85,
+          "lo": 0.7093,
+          "hi": 0.9294,
+          "n": 40
+        },
+        "flag_rate": 0.0,
+        "false_alarm": {
+          "p": 0.0,
+          "lo": 0.0,
+          "hi": 0.0876,
+          "n": 40
+        }
+      },
+      "source_only": {
+        "taint_adoption": {
+          "p": 0.0,
+          "lo": 0.0,
+          "hi": 0.0876,
+          "n": 40
+        },
+        "prevented_adoption": {
+          "p": 1.0,
+          "lo": 0.9124,
+          "hi": 1.0,
+          "n": 40
+        },
+        "flag_rate": 0.0,
+        "false_alarm": {
+          "p": 0.0,
+          "lo": 0.0,
+          "hi": 0.0876,
+          "n": 40
+        }
+      },
+      "guardrail": {
+        "taint_adoption": {
+          "p": 0.0,
+          "lo": 0.0,
+          "hi": 0.0876,
+          "n": 40
+        },
+        "prevented_adoption": {
+          "p": 1.0,
+          "lo": 0.9124,
+          "hi": 1.0,
+          "n": 40
+        },
+        "flag_rate": 0.0,
+        "false_alarm": {
+          "p": 0.0,
+          "lo": 0.0,
+          "hi": 0.0876,
+          "n": 40
+        }
+      }
+    }
+  },
+  "per_template": {
+    "base": {
+      "counts": {
+        "total": 20,
+        "tainted": 10,
+        "clean_control": 10,
+        "eligible_tainted": 10,
+        "clean_source_grounded": 10
+      },
+      "eligibility_rate_tainted": 1.0,
+      "conditions": {
+        "baseline": {
+          "taint_adoption": {
+            "p": 0.9,
+            "lo": 0.5958,
+            "hi": 0.9821,
+            "n": 10
+          },
+          "prevented_adoption": {
+            "p": 0.1,
+            "lo": 0.0179,
+            "hi": 0.4042,
+            "n": 10
+          },
+          "flag_rate": 0.0,
+          "false_alarm": {
+            "p": 0.0,
+            "lo": 0.0,
+            "hi": 0.2775,
+            "n": 10
+          }
+        },
+        "tag_only": {
+          "taint_adoption": {
+            "p": 0.0,
+            "lo": 0.0,
+            "hi": 0.2775,
+            "n": 10
+          },
+          "prevented_adoption": {
+            "p": 1.0,
+            "lo": 0.7225,
+            "hi": 1.0,
+            "n": 10
+          },
+          "flag_rate": 0.0,
+          "false_alarm": {
+            "p": 0.0,
+            "lo": 0.0,
+            "hi": 0.2775,
+            "n": 10
+          }
+        },
+        "source_only": {
+          "taint_adoption": {
+            "p": 0.0,
+            "lo": 0.0,
+            "hi": 0.2775,
+            "n": 10
+          },
+          "prevented_adoption": {
+            "p": 1.0,
+            "lo": 0.7225,
+            "hi": 1.0,
+            "n": 10
+          },
+          "flag_rate": 0.0,
+          "false_alarm": {
+            "p": 0.0,
+            "lo": 0.0,
+            "hi": 0.2775,
+            "n": 10
+          }
+        },
+        "guardrail": {
+          "taint_adoption": {
+            "p": 0.0,
+            "lo": 0.0,
+            "hi": 0.2775,
+            "n": 10
+          },
+          "prevented_adoption": {
+            "p": 1.0,
+            "lo": 0.7225,
+            "hi": 1.0,
+            "n": 10
+          },
+          "flag_rate": 0.0,
+          "false_alarm": {
+            "p": 0.0,
+            "lo": 0.0,
+            "hi": 0.2775,
+            "n": 10
+          }
+        }
+      }
+    },
+    "modmath": {
+      "counts": {
+        "total": 20,
+        "tainted": 10,
+        "clean_control": 10,
+        "eligible_tainted": 10,
+        "clean_source_grounded": 10
+      },
+      "eligibility_rate_tainted": 1.0,
+      "conditions": {
+        "baseline": {
+          "taint_adoption": {
+            "p": 1.0,
+            "lo": 0.7225,
+            "hi": 1.0,
+            "n": 10
+          },
+          "prevented_adoption": {
+            "p": 0.0,
+            "lo": 0.0,
+            "hi": 0.2775,
+            "n": 10
+          },
+          "flag_rate": 0.0,
+          "false_alarm": {
+            "p": 0.0,
+            "lo": 0.0,
+            "hi": 0.2775,
+            "n": 10
+          }
+        },
+        "tag_only": {
+          "taint_adoption": {
+            "p": 0.2,
+            "lo": 0.0567,
+            "hi": 0.5098,
+            "n": 10
+          },
+          "prevented_adoption": {
+            "p": 0.8,
+            "lo": 0.4902,
+            "hi": 0.9433,
+            "n": 10
+          },
+          "flag_rate": 0.0,
+          "false_alarm": {
+            "p": 0.0,
+            "lo": 0.0,
+            "hi": 0.2775,
+            "n": 10
+          }
+        },
+        "source_only": {
+          "taint_adoption": {
+            "p": 0.0,
+            "lo": 0.0,
+            "hi": 0.2775,
+            "n": 10
+          },
+          "prevented_adoption": {
+            "p": 1.0,
+            "lo": 0.7225,
+            "hi": 1.0,
+            "n": 10
+          },
+          "flag_rate": 0.0,
+          "false_alarm": {
+            "p": 0.0,
+            "lo": 0.0,
+            "hi": 0.2775,
+            "n": 10
+          }
+        },
+        "guardrail": {
+          "taint_adoption": {
+            "p": 0.0,
+            "lo": 0.0,
+            "hi": 0.2775,
+            "n": 10
+          },
+          "prevented_adoption": {
+            "p": 1.0,
+            "lo": 0.7225,
+            "hi": 1.0,
+            "n": 10
+          },
+          "flag_rate": 0.0,
+          "false_alarm": {
+            "p": 0.0,
+            "lo": 0.0,
+            "hi": 0.2775,
+            "n": 10
+          }
+        }
+      }
+    },
+    "seq": {
+      "counts": {
+        "total": 20,
+        "tainted": 10,
+        "clean_control": 10,
+        "eligible_tainted": 10,
+        "clean_source_grounded": 10
+      },
+      "eligibility_rate_tainted": 1.0,
+      "conditions": {
+        "baseline": {
+          "taint_adoption": {
+            "p": 1.0,
+            "lo": 0.7225,
+            "hi": 1.0,
+            "n": 10
+          },
+          "prevented_adoption": {
+            "p": 0.0,
+            "lo": 0.0,
+            "hi": 0.2775,
+            "n": 10
+          },
+          "flag_rate": 0.0,
+          "false_alarm": {
+            "p": 0.0,
+            "lo": 0.0,
+            "hi": 0.2775,
+            "n": 10
+          }
+        },
+        "tag_only": {
+          "taint_adoption": {
+            "p": 0.0,
+            "lo": 0.0,
+            "hi": 0.2775,
+            "n": 10
+          },
+          "prevented_adoption": {
+            "p": 1.0,
+            "lo": 0.7225,
+            "hi": 1.0,
+            "n": 10
+          },
+          "flag_rate": 0.0,
+          "false_alarm": {
+            "p": 0.0,
+            "lo": 0.0,
+            "hi": 0.2775,
+            "n": 10
+          }
+        },
+        "source_only": {
+          "taint_adoption": {
+            "p": 0.0,
+            "lo": 0.0,
+            "hi": 0.2775,
+            "n": 10
+          },
+          "prevented_adoption": {
+            "p": 1.0,
+            "lo": 0.7225,
+            "hi": 1.0,
+            "n": 10
+          },
+          "flag_rate": 0.0,
+          "false_alarm": {
+            "p": 0.0,
+            "lo": 0.0,
+            "hi": 0.2775,
+            "n": 10
+          }
+        },
+        "guardrail": {
+          "taint_adoption": {
+            "p": 0.0,
+            "lo": 0.0,
+            "hi": 0.2775,
+            "n": 10
+          },
+          "prevented_adoption": {
+            "p": 1.0,
+            "lo": 0.7225,
+            "hi": 1.0,
+            "n": 10
+          },
+          "flag_rate": 0.0,
+          "false_alarm": {
+            "p": 0.0,
+            "lo": 0.0,
+            "hi": 0.2775,
+            "n": 10
+          }
+        }
+      }
+    },
+    "unit": {
+      "counts": {
+        "total": 20,
+        "tainted": 10,
+        "clean_control": 10,
+        "eligible_tainted": 10,
+        "clean_source_grounded": 10
+      },
+      "eligibility_rate_tainted": 1.0,
+      "conditions": {
+        "baseline": {
+          "taint_adoption": {
+            "p": 1.0,
+            "lo": 0.7225,
+            "hi": 1.0,
+            "n": 10
+          },
+          "prevented_adoption": {
+            "p": 0.0,
+            "lo": 0.0,
+            "hi": 0.2775,
+            "n": 10
+          },
+          "flag_rate": 0.0,
+          "false_alarm": {
+            "p": 0.0,
+            "lo": 0.0,
+            "hi": 0.2775,
+            "n": 10
+          }
+        },
+        "tag_only": {
+          "taint_adoption": {
+            "p": 0.4,
+            "lo": 0.1682,
+            "hi": 0.6873,
+            "n": 10
+          },
+          "prevented_adoption": {
+            "p": 0.6,
+            "lo": 0.3127,
+            "hi": 0.8318,
+            "n": 10
+          },
+          "flag_rate": 0.0,
+          "false_alarm": {
+            "p": 0.0,
+            "lo": 0.0,
+            "hi": 0.2775,
+            "n": 10
+          }
+        },
+        "source_only": {
+          "taint_adoption": {
+            "p": 0.0,
+            "lo": 0.0,
+            "hi": 0.2775,
+            "n": 10
+          },
+          "prevented_adoption": {
+            "p": 1.0,
+            "lo": 0.7225,
+            "hi": 1.0,
+            "n": 10
+          },
+          "flag_rate": 0.0,
+          "false_alarm": {
+            "p": 0.0,
+            "lo": 0.0,
+            "hi": 0.2775,
+            "n": 10
+          }
+        },
+        "guardrail": {
+          "taint_adoption": {
+            "p": 0.0,
+            "lo": 0.0,
+            "hi": 0.2775,
+            "n": 10
+          },
+          "prevented_adoption": {
+            "p": 1.0,
+            "lo": 0.7225,
+            "hi": 1.0,
+            "n": 10
+          },
+          "flag_rate": 0.0,
+          "false_alarm": {
+            "p": 0.0,
+            "lo": 0.0,
+            "hi": 0.2775,
+            "n": 10
+          }
+        }
+      }
+    }
+  },
+  "episodes": [
+    {
+      "episode_id": "ep0000-modmath-tainted",
+      "template": "modmath",
+      "arm": "tainted",
+      "oracle": "50",
+      "logged_gold": "14",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "ep0001-modmath-clean_control",
+      "template": "modmath",
+      "arm": "clean_control",
+      "oracle": "50",
+      "logged_gold": "50",
+      "provenance": "source-grounded",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "ep0002-unit-tainted",
+      "template": "unit",
+      "arm": "tainted",
+      "oracle": "1480",
+      "logged_gold": "1665",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "incorrect",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "ep0003-unit-clean_control",
+      "template": "unit",
+      "arm": "clean_control",
+      "oracle": "1480",
+      "logged_gold": "1480",
+      "provenance": "source-grounded",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "ep0004-base-tainted",
+      "template": "base",
+      "arm": "tainted",
+      "oracle": "220010",
+      "logged_gold": "220011",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "ep0005-base-clean_control",
+      "template": "base",
+      "arm": "clean_control",
+      "oracle": "220010",
+      "logged_gold": "220010",
+      "provenance": "source-grounded",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "ep0006-seq-tainted",
+      "template": "seq",
+      "arm": "tainted",
+      "oracle": "1085",
+      "logged_gold": "1117",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "ep0007-seq-clean_control",
+      "template": "seq",
+      "arm": "clean_control",
+      "oracle": "1085",
+      "logged_gold": "1085",
+      "provenance": "source-grounded",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "ep0008-modmath-tainted",
+      "template": "modmath",
+      "arm": "tainted",
+      "oracle": "13",
+      "logged_gold": "54",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "ep0009-modmath-clean_control",
+      "template": "modmath",
+      "arm": "clean_control",
+      "oracle": "13",
+      "logged_gold": "13",
+      "provenance": "source-grounded",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "ep0010-unit-tainted",
+      "template": "unit",
+      "arm": "tainted",
+      "oracle": "7050",
+      "logged_gold": "7065",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "incorrect",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "ep0011-unit-clean_control",
+      "template": "unit",
+      "arm": "clean_control",
+      "oracle": "7050",
+      "logged_gold": "7050",
+      "provenance": "source-grounded",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "ep0012-base-tainted",
+      "template": "base",
+      "arm": "tainted",
+      "oracle": "10101000",
+      "logged_gold": "10101001",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "ep0013-base-clean_control",
+      "template": "base",
+      "arm": "clean_control",
+      "oracle": "10101000",
+      "logged_gold": "10101000",
+      "provenance": "source-grounded",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "ep0014-seq-tainted",
+      "template": "seq",
+      "arm": "tainted",
+      "oracle": "1182",
+      "logged_gold": "1197",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "ep0015-seq-clean_control",
+      "template": "seq",
+      "arm": "clean_control",
+      "oracle": "1182",
+      "logged_gold": "1182",
+      "provenance": "source-grounded",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "ep0016-modmath-tainted",
+      "template": "modmath",
+      "arm": "tainted",
+      "oracle": "30",
+      "logged_gold": "26",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "incorrect",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "ep0017-modmath-clean_control",
+      "template": "modmath",
+      "arm": "clean_control",
+      "oracle": "30",
+      "logged_gold": "30",
+      "provenance": "source-grounded",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "ep0018-unit-tainted",
+      "template": "unit",
+      "arm": "tainted",
+      "oracle": "1872",
+      "logged_gold": "1859",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "ep0019-unit-clean_control",
+      "template": "unit",
+      "arm": "clean_control",
+      "oracle": "1872",
+      "logged_gold": "1872",
+      "provenance": "source-grounded",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "ep0020-base-tainted",
+      "template": "base",
+      "arm": "tainted",
+      "oracle": "14056",
+      "logged_gold": "14066",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "ep0021-base-clean_control",
+      "template": "base",
+      "arm": "clean_control",
+      "oracle": "14056",
+      "logged_gold": "14056",
+      "provenance": "source-grounded",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "ep0022-seq-tainted",
+      "template": "seq",
+      "arm": "tainted",
+      "oracle": "324",
+      "logged_gold": "317",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "ep0023-seq-clean_control",
+      "template": "seq",
+      "arm": "clean_control",
+      "oracle": "324",
+      "logged_gold": "324",
+      "provenance": "source-grounded",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "ep0024-modmath-tainted",
+      "template": "modmath",
+      "arm": "tainted",
+      "oracle": "72",
+      "logged_gold": "12",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "incorrect",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "ep0025-modmath-clean_control",
+      "template": "modmath",
+      "arm": "clean_control",
+      "oracle": "72",
+      "logged_gold": "72",
+      "provenance": "source-grounded",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "ep0026-unit-tainted",
+      "template": "unit",
+      "arm": "tainted",
+      "oracle": "6176",
+      "logged_gold": "6562",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "ep0027-unit-clean_control",
+      "template": "unit",
+      "arm": "clean_control",
+      "oracle": "6176",
+      "logged_gold": "6176",
+      "provenance": "source-grounded",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "ep0028-base-tainted",
+      "template": "base",
+      "arm": "tainted",
+      "oracle": "2043",
+      "logged_gold": "2100",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "ep0029-base-clean_control",
+      "template": "base",
+      "arm": "clean_control",
+      "oracle": "2043",
+      "logged_gold": "2043",
+      "provenance": "source-grounded",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "ep0030-seq-tainted",
+      "template": "seq",
+      "arm": "tainted",
+      "oracle": "269",
+      "logged_gold": "263",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "ep0031-seq-clean_control",
+      "template": "seq",
+      "arm": "clean_control",
+      "oracle": "269",
+      "logged_gold": "269",
+      "provenance": "source-grounded",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "ep0032-modmath-tainted",
+      "template": "modmath",
+      "arm": "tainted",
+      "oracle": "27",
+      "logged_gold": "28",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "ep0033-modmath-clean_control",
+      "template": "modmath",
+      "arm": "clean_control",
+      "oracle": "27",
+      "logged_gold": "27",
+      "provenance": "source-grounded",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "ep0034-unit-tainted",
+      "template": "unit",
+      "arm": "tainted",
+      "oracle": "2440",
+      "logged_gold": "2430",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "ep0035-unit-clean_control",
+      "template": "unit",
+      "arm": "clean_control",
+      "oracle": "2440",
+      "logged_gold": "2440",
+      "provenance": "source-grounded",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "ep0036-base-tainted",
+      "template": "base",
+      "arm": "tainted",
+      "oracle": "10101212",
+      "logged_gold": "10101220",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "ep0037-base-clean_control",
+      "template": "base",
+      "arm": "clean_control",
+      "oracle": "10101212",
+      "logged_gold": "10101212",
+      "provenance": "source-grounded",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "ep0038-seq-tainted",
+      "template": "seq",
+      "arm": "tainted",
+      "oracle": "214",
+      "logged_gold": "198",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "ep0039-seq-clean_control",
+      "template": "seq",
+      "arm": "clean_control",
+      "oracle": "214",
+      "logged_gold": "214",
+      "provenance": "source-grounded",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "ep0040-modmath-tainted",
+      "template": "modmath",
+      "arm": "tainted",
+      "oracle": "27",
+      "logged_gold": "17",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "ep0041-modmath-clean_control",
+      "template": "modmath",
+      "arm": "clean_control",
+      "oracle": "27",
+      "logged_gold": "27",
+      "provenance": "source-grounded",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "ep0042-unit-tainted",
+      "template": "unit",
+      "arm": "tainted",
+      "oracle": "3227",
+      "logged_gold": "3688",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "incorrect",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "ep0043-unit-clean_control",
+      "template": "unit",
+      "arm": "clean_control",
+      "oracle": "3227",
+      "logged_gold": "3227",
+      "provenance": "source-grounded",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "ep0044-base-tainted",
+      "template": "base",
+      "arm": "tainted",
+      "oracle": "43042",
+      "logged_gold": "43044",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "ep0045-base-clean_control",
+      "template": "base",
+      "arm": "clean_control",
+      "oracle": "43042",
+      "logged_gold": "43042",
+      "provenance": "source-grounded",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "ep0046-seq-tainted",
+      "template": "seq",
+      "arm": "tainted",
+      "oracle": "225",
+      "logged_gold": "220",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "ep0047-seq-clean_control",
+      "template": "seq",
+      "arm": "clean_control",
+      "oracle": "225",
+      "logged_gold": "225",
+      "provenance": "source-grounded",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "ep0048-modmath-tainted",
+      "template": "modmath",
+      "arm": "tainted",
+      "oracle": "35",
+      "logged_gold": "57",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "ep0049-modmath-clean_control",
+      "template": "modmath",
+      "arm": "clean_control",
+      "oracle": "35",
+      "logged_gold": "35",
+      "provenance": "source-grounded",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "ep0050-unit-tainted",
+      "template": "unit",
+      "arm": "tainted",
+      "oracle": "164",
+      "logged_gold": "205",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "ep0051-unit-clean_control",
+      "template": "unit",
+      "arm": "clean_control",
+      "oracle": "164",
+      "logged_gold": "164",
+      "provenance": "source-grounded",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "ep0052-base-tainted",
+      "template": "base",
+      "arm": "tainted",
+      "oracle": "2103",
+      "logged_gold": "2113",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "ep0053-base-clean_control",
+      "template": "base",
+      "arm": "clean_control",
+      "oracle": "2103",
+      "logged_gold": "2103",
+      "provenance": "source-grounded",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "ep0054-seq-tainted",
+      "template": "seq",
+      "arm": "tainted",
+      "oracle": "612",
+      "logged_gold": "602",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "ep0055-seq-clean_control",
+      "template": "seq",
+      "arm": "clean_control",
+      "oracle": "612",
+      "logged_gold": "612",
+      "provenance": "source-grounded",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "ep0056-modmath-tainted",
+      "template": "modmath",
+      "arm": "tainted",
+      "oracle": "33",
+      "logged_gold": "38",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "ep0057-modmath-clean_control",
+      "template": "modmath",
+      "arm": "clean_control",
+      "oracle": "33",
+      "logged_gold": "33",
+      "provenance": "source-grounded",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "ep0058-unit-tainted",
+      "template": "unit",
+      "arm": "tainted",
+      "oracle": "7560",
+      "logged_gold": "7542",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "ep0059-unit-clean_control",
+      "template": "unit",
+      "arm": "clean_control",
+      "oracle": "7560",
+      "logged_gold": "7560",
+      "provenance": "source-grounded",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "ep0060-base-tainted",
+      "template": "base",
+      "arm": "tainted",
+      "oracle": "10666",
+      "logged_gold": "11006",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "ep0061-base-clean_control",
+      "template": "base",
+      "arm": "clean_control",
+      "oracle": "10666",
+      "logged_gold": "10666",
+      "provenance": "source-grounded",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "ep0062-seq-tainted",
+      "template": "seq",
+      "arm": "tainted",
+      "oracle": "268",
+      "logged_gold": "278",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "ep0063-seq-clean_control",
+      "template": "seq",
+      "arm": "clean_control",
+      "oracle": "268",
+      "logged_gold": "268",
+      "provenance": "source-grounded",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "ep0064-modmath-tainted",
+      "template": "modmath",
+      "arm": "tainted",
+      "oracle": "34",
+      "logged_gold": "58",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "ep0065-modmath-clean_control",
+      "template": "modmath",
+      "arm": "clean_control",
+      "oracle": "34",
+      "logged_gold": "34",
+      "provenance": "source-grounded",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "ep0066-unit-tainted",
+      "template": "unit",
+      "arm": "tainted",
+      "oracle": "1507",
+      "logged_gold": "1518",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "incorrect",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "ep0067-unit-clean_control",
+      "template": "unit",
+      "arm": "clean_control",
+      "oracle": "1507",
+      "logged_gold": "1507",
+      "provenance": "source-grounded",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "ep0068-base-tainted",
+      "template": "base",
+      "arm": "tainted",
+      "oracle": "11002000",
+      "logged_gold": "11002001",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "ep0069-base-clean_control",
+      "template": "base",
+      "arm": "clean_control",
+      "oracle": "11002000",
+      "logged_gold": "11002000",
+      "provenance": "source-grounded",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "ep0070-seq-tainted",
+      "template": "seq",
+      "arm": "tainted",
+      "oracle": "856",
+      "logged_gold": "824",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "ep0071-seq-clean_control",
+      "template": "seq",
+      "arm": "clean_control",
+      "oracle": "856",
+      "logged_gold": "856",
+      "provenance": "source-grounded",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "ep0072-modmath-tainted",
+      "template": "modmath",
+      "arm": "tainted",
+      "oracle": "9",
+      "logged_gold": "36",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "ep0073-modmath-clean_control",
+      "template": "modmath",
+      "arm": "clean_control",
+      "oracle": "9",
+      "logged_gold": "9",
+      "provenance": "source-grounded",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "ep0074-unit-tainted",
+      "template": "unit",
+      "arm": "tainted",
+      "oracle": "1008",
+      "logged_gold": "1092",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "ep0075-unit-clean_control",
+      "template": "unit",
+      "arm": "clean_control",
+      "oracle": "1008",
+      "logged_gold": "1008",
+      "provenance": "source-grounded",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "ep0076-base-tainted",
+      "template": "base",
+      "arm": "tainted",
+      "oracle": "43032",
+      "logged_gold": "43034",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "ep0077-base-clean_control",
+      "template": "base",
+      "arm": "clean_control",
+      "oracle": "43032",
+      "logged_gold": "43032",
+      "provenance": "source-grounded",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "ep0078-seq-tainted",
+      "template": "seq",
+      "arm": "tainted",
+      "oracle": "273",
+      "logged_gold": "284",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "ep0079-seq-clean_control",
+      "template": "seq",
+      "arm": "clean_control",
+      "oracle": "273",
+      "logged_gold": "273",
+      "provenance": "source-grounded",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    }
+  ]
+}

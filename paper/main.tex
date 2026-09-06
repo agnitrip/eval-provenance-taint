@@ -28,12 +28,14 @@ build a fully synthetic, self-contained benchmark that induces the failure under
 conditions and measures it with a real large language model verifier whose decisions are scored
 against an immutable oracle held outside the writable pipeline. On matched tainted and clean
 episodes with explicit provenance identifiers, we report a taint-adoption rate (how often the
-grader follows the self-authored value against the oracle), and the recall and false-alarm cost of
-a provenance-tag plus quote-source guardrail. Across two models the baseline grader adopts the
-self-authored value in a large fraction of eligible episodes, and the guardrail removes most
-adoption at a measurable false-alarm cost on clean controls. All results are bounded to the
-synthetic pipeline and the models tested; we make no claim about real-world prevalence. The
-benchmark and harness are released as a reproducible artifact.
+grader follows the self-authored value against the oracle), and we ablate a guardrail into its two
+parts, a provenance tag and the authoritative source, to see which drives resistance. Across four
+models from two providers (pooled $n=240$ each) the baseline grader adopts the self-authored value
+in almost all eligible episodes. Surfacing the source removes adoption for every model. A provenance
+tag on its own is model-dependent: it nearly eliminates adoption for one model yet barely moves a
+small model that keeps trusting its own unverified gold. All results are bounded to the synthetic
+pipeline and the models tested; we make no claim about real-world prevalence. The benchmark and
+harness are released as a reproducible artifact.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -68,9 +70,10 @@ architecturally held outside the writable pipeline.
 \item A measurement protocol whose central number, the taint-adoption rate, is a real verifier's
 decision scored against the oracle, not a scripted rate, together with the recall and false-alarm
 cost of a provenance-tag plus quote-source guardrail on clean controls.
-\item An empirical result across two models showing that the failure is inducible and measurable,
-and that a simple guardrail trades adoption against false alarms. All claims are bounded to the
-tested synthetic pipeline and models.
+\item An empirical result across four models from two providers showing that the failure is
+inducible and measurable, and an ablation showing that the authoritative source, not the provenance
+label alone, is what reliably prevents adoption, with the label's effect ranging from near-total to
+negligible across models. All claims are bounded to the tested synthetic pipeline and models.
 \end{itemize}
 
 \section{Related Work and Distinction}
@@ -131,10 +134,15 @@ identifier. A verifier that logs a wrong value from imperfect context is therefo
 \texttt{model-inferred} with no supporting quote, which is the signal the guardrail later uses.
 
 \textbf{Stage B, grading (the downstream decision).} The verifier grades a candidate, set to the
-true answer, against the stored gold under two conditions. \texttt{baseline} sees only the stored
-value. \texttt{guardrail} additionally sees the provenance tag and the authoritative source, and is
-instructed to trust the reference only if it is source-grounded and to distrust a model-inferred
-reference that conflicts with the source.
+true answer, against the stored gold. We run a $2\times2$ ablation over what the grader is shown,
+to separate whether resistance to a self-poisoned gold comes from the verification-provenance
+\emph{tag} or from the authoritative \emph{source}: \texttt{baseline} sees only the stored value;
+\texttt{tag\_only} adds the provenance tag with an instruction to distrust an unverified reference,
+but no source; \texttt{source\_only} adds the source but no provenance tag; \texttt{guardrail} adds
+both, and is instructed to trust the reference only if it is source-grounded and to flag a
+model-inferred reference that conflicts with the source. The provenance tag is a binary
+verification-status signal (source-grounded versus model-inferred), not a claim about who authored
+the reference.
 
 \subsection{Oracle isolation}
 The oracle holds the true answer for every episode. It is built once, exposes read-only access, and
@@ -152,71 +160,76 @@ diverges from the oracle. Only eligible episodes can exhibit taint, so we report
 than assume it.
 \item \textbf{Taint-adoption rate.} Fraction of eligible tainted episodes graded \texttt{incorrect},
 meaning the grader followed the self-authored wrong value and rejected the true candidate. Reported
-under baseline and guardrail. This is a real verifier decision.
-\item \textbf{Guardrail recall (prevented adoption).} Fraction of eligible tainted episodes the
-guardrail did not adopt, by grading \texttt{correct} from the source or by an explicit
-\texttt{flag}. We also report the stricter explicit-flag rate.
+per condition. This is a real verifier decision.
+\item \textbf{Prevented adoption (recall).} Fraction of eligible tainted episodes a condition did
+not adopt, by grading \texttt{correct} or by an explicit \texttt{flag}. We also report the stricter
+explicit-flag rate.
 \item \textbf{False-alarm rate.} On clean controls with correct, source-grounded gold, the fraction
-the guardrail wrongly rejects or flags. This is the guardrail's utility cost.
+a condition wrongly rejects or flags. This is a condition's utility cost.
 \end{itemize}
 
 \section{Experimental Setup}
-We run the benchmark with two models as the verifier, Claude Haiku 4.5 and Claude Sonnet 4.6, at
-$n=80$ episodes each (40 item-matched tainted/clean pairs), seed fixed, temperature $0$. Each
-episode uses three verifier calls: one Stage-A logging call and two Stage-B grading calls (baseline
-and guardrail). The same model plays both stages, matching the single-pipeline setting. Reference
-material, distractors, and the oracle are identical across models, so any difference in the reported
-rates is a property of the verifier, not the data.
+We run the benchmark with four models as the verifier across two providers: Claude Haiku 4.5 and
+Claude Sonnet 4.6 (Anthropic), and GPT-4o-mini and GPT-4.1 (OpenAI). Each model is run at $n=80$
+episodes (40 item-matched tainted/clean pairs) for each of three seeds (7, 17, 29), pooled to
+$n=240$ per model, temperature $0$. Each episode uses five verifier calls: one Stage-A logging call
+and four Stage-B grading calls (the four ablation conditions). The same model plays both stages,
+matching the single-pipeline setting. Reference material, distractors, and the oracle are identical
+across models, so any difference in the reported rates is a property of the verifier, not the data.
+We report Wilson 95\% confidence intervals over the pooled eligible set.
 
 \section{Results}
 
 \begin{table}[t]
-\caption{Provenance-taint measurements (synthetic pipeline, $n=80$ per model,
-40 item-matched tainted/clean pairs). All values are rates in $[0,1]$.}
+\caption{Taint-adoption rate per ablation condition (synthetic pipeline, pooled $n=240$ per model,
+120 eligible tainted episodes). Lower is better. False-alarm on clean controls was $0.00$ for every
+model under \texttt{baseline}, \texttt{tag\_only}, and \texttt{source\_only}, and $0.00$--$0.05$
+under \texttt{guardrail}. Eligibility was $\geq 0.98$ for all models.}
 \label{tab:main}
 \centering
-\begin{tabular}{lcc}
+\begin{tabular}{lcccc}
 \toprule
-Metric & Haiku 4.5 & Sonnet 4.6 \\
+Condition & GPT-4o-mini & GPT-4.1 & Haiku 4.5 & Sonnet 4.6 \\
 \midrule
-Eligibility (tainted) & 1.00 & 0.98 \\
-Taint-adoption, baseline & 0.93 & 0.95 \\
-Taint-adoption, guardrail & 0.00 & 0.00 \\
-Guardrail recall (prevented) & 1.00 & 1.00 \\
-Guardrail explicit-flag & 0.00 & 0.00 \\
-False-alarm (clean) & 0.08 & 0.00 \\
+\texttt{baseline}    & 1.00 & 1.00 & 0.93 & 0.99 \\
+\texttt{tag\_only}   & 0.97 & 0.40 & 0.03 & 0.16 \\
+\texttt{source\_only}& 0.06 & 0.00 & 0.05 & 0.00 \\
+\texttt{guardrail}   & 0.00 & 0.00 & 0.00 & 0.00 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-Table~\ref{tab:main} reports the main measurements. Under the baseline condition both verifiers
-adopt the self-authored value at a high rate: Haiku 4.5 in 0.93 of its 40 eligible episodes and
-Sonnet 4.6 in 0.95 of its 39. In these cases the grader rejects a candidate that matches the
-oracle, because the stored gold, which the pipeline itself wrote, disagrees with it. The grader had
-the question in hand and could have recomputed; under baseline it deferred to the record instead.
-Under the guardrail condition, adoption drops to zero for both models. The guardrail prevents
-adoption by recovering the correct answer from the authoritative source. Neither model used the
-explicit flag verdict, so prevented-adoption recall is 1.00 while the explicit-flag rate is zero
-for both verifiers. The discipline is not free. On clean controls, where the stored gold was correct and
-source-grounded, Haiku 4.5 wrongly rejects the reference in 0.08 of cases and Sonnet 4.6 in none.
-Eligibility is near one, so the induced taint almost always produced a divergent gold for the
-grader to adopt or resist; the rates above are therefore over 39 to 40 episodes per model, and we
-report them as an existence-and-magnitude result on this synthetic pipeline, not as population
-estimates.
+Table~\ref{tab:main} reports taint-adoption per condition. Under \texttt{baseline} every model
+adopts the self-authored value in almost all eligible episodes (0.93 to 1.00). The grader rejects a
+candidate that matches the oracle, because the stored gold, which the pipeline itself wrote,
+disagrees with it. The grader had the question in hand and could have recomputed; under baseline it
+deferred to the record.
+
+The ablation separates the two ingredients of the guardrail. Showing the authoritative source
+(\texttt{source\_only}) drives adoption to near zero for every model (0.00 to 0.06). Showing only
+the provenance tag (\texttt{tag\_only}), with no source, has a sharply model-dependent effect:
+adoption falls to 0.03 for Haiku 4.5 (Wilson 95\% CI [0.01, 0.07]) but stays at 0.97 for GPT-4o-mini
+([0.93, 0.99]), with GPT-4.1 (0.40, [0.32, 0.49]) and Sonnet 4.6 (0.16) in between. A weaker verifier
+told that its stored gold is unverified still adopts it. The full \texttt{guardrail} (tag and
+source) removes adoption for all models (0.00, upper CI $\leq 0.03$), at a false-alarm cost of at
+most 0.05 on clean controls. All rates are over 119 to 120 eligible episodes per model and are
+reported as existence-and-magnitude results on this synthetic pipeline, not population estimates.
 
 \section{Discussion}
-The result says three things about this synthetic pipeline. First, provenance taint is inducible:
-when the logging step reads imperfect material, the recorded gold diverges from the oracle, and a
-baseline grader that defers to the record propagates that divergence into a wrong grade. Second,
-the failure is a genuine model decision. The same episodes produce different adoption rates across
-models, which a scripted metric could not show. Third, a lightweight guardrail helps but is not
-free. Attaching a provenance tag and the source, and instructing the grader to distrust
-model-inferred references, prevents most adoption, but it raises false alarms on clean controls
-where the recorded gold was correct all along.
+Three findings hold on this synthetic pipeline. First, provenance taint is inducible: when the
+logging step reads imperfect material, the recorded gold diverges from the oracle, and a baseline
+grader that defers to the record propagates that divergence into a wrong grade, across every model
+tested. Second, the failure is a genuine model decision. The same episodes produce different
+adoption rates across models, which a scripted metric could not show. Third, and most useful, the
+two parts of the guardrail do different work. The authoritative source reliably prevents adoption
+everywhere. A provenance label on its own is not a reliable fix: its effect ranges from near-total
+(Haiku 4.5) to negligible (GPT-4o-mini). A weaker verifier needs the source; a warning that its
+reference is unverified is not enough on its own.
 
-The practical reading for on-device verifier pipelines is that a stored reference should carry its
-provenance, and a grader should be allowed to distrust a reference it or a peer authored. The cost
-of that discipline is a false-alarm rate that a deployment would need to tune.
+The practical reading for on-device verifier pipelines, where the verifier is often a small model,
+is that a stored reference should carry its provenance and the grader should be able to consult the
+source it was supposed to be grounded in. A provenance tag alone may not move a small verifier. The
+cost of surfacing both is a false-alarm rate, at most 0.05 here, that a deployment would tune.
 
 \section{Limitations}
 The benchmark is synthetic and small in scope. The tasks are deterministic arithmetic-style items
