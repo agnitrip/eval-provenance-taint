@@ -16,7 +16,7 @@ import glob
 import json
 from types import SimpleNamespace
 
-from eptaint.metrics import summarize
+from eptaint.metrics import summarize, summarize_outcome
 from eptaint.verifier import CONDITIONS
 
 
@@ -35,20 +35,24 @@ def main():
     for f in args.files:
         files.extend(sorted(glob.glob(f)) if any(c in f for c in "*?[") else [f])
 
-    pooled, per_seed, model = [], [], None
+    pooled, per_seed, model, mode = [], [], None, "distractor"
     for f in files:
         eps, meta = _load_episodes(f)
         model = meta.get("model")
+        mode = meta.get("taint_mode", "distractor")
         pooled.extend(eps)
-        s = summarize(eps)
+        s = summarize_outcome(eps) if mode == "natural" else summarize(eps)
         per_seed.append((meta.get("seed"), s))
 
     label = args.label or model or "model"
-    agg = summarize(pooled)
+    summ = summarize_outcome if mode == "natural" else summarize
+    agg = summ(pooled)
     c = agg["conditions"]
-    print(f"\n=== {label}  (pooled n={agg['counts']['total']} over {len(files)} seeds, "
-          f"eligible={agg['counts']['eligible_tainted']}, "
-          f"clean_sg={agg['counts']['clean_source_grounded']}) ===")
+    elig_n = agg["counts"].get("eligible_tainted", agg["counts"].get("eligible"))
+    ctrl_n = agg["counts"].get("clean_source_grounded", agg["counts"].get("clean_correct"))
+    extra = f", self_error_rate={agg['self_error_rate']}" if mode == "natural" else ""
+    print(f"\n=== {label} [{mode}]  (pooled n={agg['counts']['total']} over {len(files)} seeds, "
+          f"eligible={elig_n}, clean_ctrl={ctrl_n}{extra}) ===")
     print(f"{'condition':12s} {'adopt [95% CI]':22s} {'false_alarm [95% CI]':22s} flag  seeds(adopt)")
     for cond in CONDITIONS:
         a = c[cond]["taint_adoption"]; fa = c[cond]["false_alarm"]

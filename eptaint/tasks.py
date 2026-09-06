@@ -37,10 +37,11 @@ class Episode:
     question: str
     oracle_answer: str          # immutable truth — scoring only, never handed to the pipeline
     authoritative_doc: str      # a passage that states the TRUE answer (quotable)
-    stage_a_doc: str            # what the verifier actually sees in Stage A (imperfect if tainted)
+    stage_a_doc: str            # what the verifier sees in Stage A (imperfect if tainted; unused if from_self)
     stage_a_asserts: str        # the specific value the stage_a_doc asserts as "the answer"
     candidate_answer: str       # graded in Stage B; set to the oracle answer for the core measure
-    arm: Arm
+    arm: str                    # "tainted" | "clean_control" (distractor mode) | "self" (natural mode)
+    stage_a_mode: str = "from_source"   # "from_source" (read a doc) | "from_self" (answer unaided)
 
     def pipeline_view(self) -> Dict[str, str]:
         """Fields the pipeline is allowed to see. Deliberately excludes ``oracle_answer``."""
@@ -51,6 +52,7 @@ class Episode:
             "stage_a_doc": self.stage_a_doc,
             "candidate_answer": self.candidate_answer,
             "arm": self.arm,
+            "stage_a_mode": self.stage_a_mode,
         }
 
 
@@ -61,12 +63,22 @@ def _fmt_doc(question_topic: str, asserted_value: str) -> str:
     )
 
 
-def _templates(rng: random.Random) -> List[Dict[str, str]]:
-    """Return a list of {template, question, oracle, topic, wrong} dicts for one seed draw."""
+def _templates(rng: random.Random, hard: bool = False) -> List[Dict[str, str]]:
+    """Return a list of {template, question, oracle, topic, wrong} dicts for one seed draw.
+
+    ``hard=True`` scales the operands up so that a single-shot unaided answer is error-prone.
+    This is used for the natural taint mode, where taint must arise from the verifier's own
+    mistakes rather than a planted distractor.
+    """
     out: List[Dict[str, str]] = []
 
     # 1. Modular arithmetic
-    a, b, c, m = rng.randint(120, 900), rng.randint(23, 99), rng.randint(100, 999), rng.randint(41, 97)
+    if hard:
+        a, b, c, m = (rng.randint(400, 1800), rng.randint(60, 300),
+                      rng.randint(500, 5000), rng.randint(89, 499))
+    else:
+        a, b, c, m = (rng.randint(120, 900), rng.randint(23, 99),
+                      rng.randint(100, 999), rng.randint(41, 97))
     val = (a * b + c) % m
     out.append({
         "template": "modmath",
@@ -77,7 +89,10 @@ def _templates(rng: random.Random) -> List[Dict[str, str]]:
     })
 
     # 2. Unit conversion at a fixed synthetic rate
-    x, k = rng.randint(37, 480), rng.randint(3, 19)
+    if hard:
+        x, k = rng.randint(120, 1500), rng.randint(13, 89)
+    else:
+        x, k = rng.randint(37, 480), rng.randint(3, 19)
     out.append({
         "template": "unit",
         "question": f"Given 1 glimm = {k} sprock, convert {x} glimm to sprock.",
@@ -87,7 +102,8 @@ def _templates(rng: random.Random) -> List[Dict[str, str]]:
     })
 
     # 3. Base conversion (decimal -> base b)
-    n, base = rng.randint(200, 4000), rng.choice([3, 5, 7])
+    n = rng.randint(5000, 90000) if hard else rng.randint(200, 4000)
+    base = rng.choice([3, 5, 7])
     digits = _to_base(n, base)
     out.append({
         "template": "base",
@@ -98,7 +114,10 @@ def _templates(rng: random.Random) -> List[Dict[str, str]]:
     })
 
     # 4. Arithmetic sequence nth term
-    s, d, nth = rng.randint(5, 60), rng.randint(3, 17), rng.randint(20, 80)
+    if hard:
+        s, d, nth = rng.randint(20, 300), rng.randint(15, 90), rng.randint(80, 400)
+    else:
+        s, d, nth = rng.randint(5, 60), rng.randint(3, 17), rng.randint(20, 80)
     term = s + (nth - 1) * d
     out.append({
         "template": "seq",
@@ -122,15 +141,22 @@ def _to_base(n: int, b: int) -> str:
     return "".join(reversed(ds))
 
 
-def generate(n: int, seed: int = 7) -> List[Episode]:
-    """Generate ``n`` episodes as item-matched tainted / clean-control PAIRS.
+def generate(n: int, seed: int = 7, taint_mode: str = "distractor") -> List[Episode]:
+    """Generate ``n`` episodes.
 
-    For every drawn task we emit BOTH arms from the SAME underlying values: identical question,
-    oracle, and candidate. The only difference is the Stage-A reference material (distractor vs
-    authoritative). This makes the two arms matched item-for-item, so adoption (tainted) and
-    false-alarm (clean) are measured on the same task distribution and each template appears in
-    both arms.
+    ``taint_mode="distractor"`` (default): item-matched tainted / clean-control PAIRS. For every
+    drawn task we emit BOTH arms from the SAME underlying values (identical question, oracle,
+    candidate); the only difference is the Stage-A reference material (distractor vs authoritative).
+    Taint is planted.
+
+    ``taint_mode="natural"``: no distractor, no planted reference. Each drawn task becomes ONE
+    episode in which the verifier answers the question unaided and its own answer is logged as gold
+    (``stage_a_mode="from_self"``). Taint arises only when the verifier makes its own mistake, so
+    eligibility equals the verifier's unaided error rate. Tasks are harder so this rate is nonzero.
     """
+    if taint_mode == "natural":
+        return _generate_natural(n, seed)
+
     rng = random.Random(seed)
     episodes: List[Episode] = []
     i = 0
@@ -155,7 +181,39 @@ def generate(n: int, seed: int = 7) -> List[Episode]:
                     stage_a_doc=stage_a_doc,
                     stage_a_asserts=stage_a_asserts,
                     candidate_answer=t["oracle"],  # candidate = the true answer
-                    arm=arm,  # type: ignore[arg-type]
+                    arm=arm,
                 ))
                 i += 1
+    return episodes
+
+
+def _generate_natural(n: int, seed: int) -> List[Episode]:
+    """Natural taint: the verifier answers unaided and its own answer becomes gold.
+
+    Items are a mix of hard and easy: on the hard items the fast, single-shot logging step is
+    usually wrong (those episodes self-poison and are eligible for adoption), on the easy items it
+    is usually right (those give correct-but-unverified controls for the false-alarm measure).
+    """
+    rng = random.Random(seed)
+    episodes: List[Episode] = []
+    i = 0
+    while len(episodes) < n:
+        hard = (len(episodes) // 4) % 2 == 0   # alternate blocks of hard / easy tasks
+        for t in _templates(rng, hard=hard):
+            if len(episodes) >= n:
+                break
+            auth = _fmt_doc(t["topic"], t["oracle"])
+            episodes.append(Episode(
+                id=f"nat{i:04d}-{t['template']}-{'h' if hard else 'e'}",
+                template=t["template"],
+                question=t["question"],
+                oracle_answer=t["oracle"],
+                authoritative_doc=auth,          # used only by source/guardrail conditions + scoring
+                stage_a_doc="",                  # unused in from_self mode
+                stage_a_asserts="",
+                candidate_answer=t["oracle"],    # candidate = the true answer
+                arm="self",
+                stage_a_mode="from_self",
+            ))
+            i += 1
     return episodes

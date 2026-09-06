@@ -47,9 +47,14 @@ def run(episodes: List[Episode], verifier: Verifier) -> List[EpisodeResult]:
     for ep in episodes:
         view = ep.pipeline_view()          # no oracle_answer inside
 
-        # --- Stage A: log the reference from Stage-A material ---
-        logged = verifier.log_reference(view["question"], view["stage_a_doc"])
-        provenance, quote = ground_against_source(logged, view["authoritative_doc"])
+        # --- Stage A: log the gold, either from Stage-A material or from the verifier itself ---
+        mode = view.get("stage_a_mode", "from_source")
+        logged = verifier.log_reference(view["question"], view["stage_a_doc"], mode=mode)
+        if mode == "from_self":
+            # a self-authored value is never validated against a source: always model-inferred
+            provenance, quote = "model-inferred", None
+        else:
+            provenance, quote = ground_against_source(logged, view["authoritative_doc"])
         store.log_gold(ep.id, logged, provenance, quote)
 
         # --- Stage B: grade under each ablation condition ---
@@ -61,7 +66,7 @@ def run(episodes: List[Episode], verifier: Verifier) -> List[EpisodeResult]:
         }
 
         truth = oracle.truth(ep.id)        # scoring only
-        eligible = (ep.arm == "tainted") and (logged.strip() != truth.strip())
+        eligible = (ep.arm != "clean_control") and (logged.strip() != truth.strip())
 
         results.append(EpisodeResult(
             episode_id=ep.id,

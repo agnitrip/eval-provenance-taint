@@ -12,7 +12,7 @@ import json
 import sys
 from dataclasses import asdict
 
-from eptaint.metrics import per_template, summarize
+from eptaint.metrics import per_template, summarize, summarize_outcome
 from eptaint.pipeline import run
 from eptaint.tasks import generate
 from eptaint.verifier import make_verifier
@@ -24,20 +24,27 @@ def main(argv=None) -> int:
     ap.add_argument("--model", default=None, help="model id for --provider anthropic")
     ap.add_argument("--n", type=int, default=40, help="number of episodes")
     ap.add_argument("--seed", type=int, default=7)
+    ap.add_argument("--taint-mode", choices=["distractor", "natural"], default="distractor",
+                    help="distractor = planted wrong reference; natural = verifier's own error")
+    ap.add_argument("--tag-variant", choices=["v1", "v2"], default="v1",
+                    help="phrasing of the tag_only distrust instruction (robustness check)")
     ap.add_argument("--out", default=None, help="write full results JSON here")
     args = ap.parse_args(argv)
 
-    episodes = generate(args.n, seed=args.seed)
-    verifier = make_verifier(args.provider, args.model)
+    episodes = generate(args.n, seed=args.seed, taint_mode=args.taint_mode)
+    verifier = make_verifier(args.provider, args.model, tag_variant=args.tag_variant)
     results = run(episodes, verifier)
 
-    summary = summarize(results)
+    summary = (summarize_outcome(results) if args.taint_mode == "natural"
+               else summarize(results))
     report = {
         "meta": {
             "provider": verifier.provider,
             "model": getattr(verifier, "model", None),
             "n": args.n,
             "seed": args.seed,
+            "taint_mode": args.taint_mode,
+            "tag_variant": args.tag_variant,
             "verifier_calls": verifier.calls,
             "scientific": verifier.provider != "mock",
             "note": "MOCK run — deterministic stub, NOT a scientific result."
@@ -45,7 +52,7 @@ def main(argv=None) -> int:
                     else "Real verifier decisions. Claims bounded to this synthetic pipeline/model.",
         },
         "summary": summary,
-        "per_template": per_template(results),
+        "per_template": {} if args.taint_mode == "natural" else per_template(results),
         "episodes": [asdict(r) for r in results],
     }
 

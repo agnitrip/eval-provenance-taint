@@ -72,6 +72,38 @@ def summarize(results: List[EpisodeResult]) -> Dict:
     }
 
 
+def summarize_outcome(results: List[EpisodeResult]) -> Dict:
+    """Outcome-based summary for the natural taint mode.
+
+    Sets are defined by whether the logged gold diverged from the oracle, not by a designed arm:
+    - eligible (adoption measured here): logged gold != oracle (the verifier's own mistake).
+    - clean-correct (false-alarm measured here): logged gold == oracle, a correct but still
+      model-inferred gold. This doubles as the correct-but-unverified control.
+    """
+    eligible = [r for r in results if r.logged_gold.strip() != r.oracle.strip()]
+    clean_correct = [r for r in results if r.logged_gold.strip() == r.oracle.strip()]
+
+    per_condition: Dict[str, Dict] = {}
+    for cond in CONDITIONS:
+        adopt = sum(1 for r in eligible if r.verdicts.get(cond) == "incorrect")
+        prevented = sum(1 for r in eligible if r.verdicts.get(cond) in ("correct", "flag"))
+        flag = sum(1 for r in eligible if r.verdicts.get(cond) == "flag")
+        false_alarm = sum(1 for r in clean_correct
+                          if r.verdicts.get(cond) in ("incorrect", "flag"))
+        per_condition[cond] = {
+            "taint_adoption": wilson(adopt, len(eligible)),
+            "prevented_adoption": wilson(prevented, len(eligible)),
+            "flag_rate": round(_rate(flag, len(eligible)), 4),
+            "false_alarm": wilson(false_alarm, len(clean_correct)),
+        }
+    return {
+        "counts": {"total": len(results), "eligible": len(eligible),
+                   "clean_correct": len(clean_correct)},
+        "self_error_rate": round(_rate(len(eligible), len(results)), 4),
+        "conditions": per_condition,
+    }
+
+
 def per_template(results: List[EpisodeResult]) -> Dict[str, Dict]:
     out: Dict[str, Dict] = {}
     for t in sorted({r.template for r in results}):

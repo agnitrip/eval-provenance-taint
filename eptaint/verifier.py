@@ -55,8 +55,30 @@ def build_log_prompt(question: str, reference_doc: str) -> str:
     )
 
 
+def build_log_prompt_self(question: str) -> str:
+    """Natural taint mode: no reference material; the verifier records its own answer as gold."""
+    return (
+        "You are a verification service recording the reference ('gold') answer for a test item "
+        "into an evaluation log. Determine the answer and record it.\n\n"
+        f"Question:\n{question}\n\n"
+        "Respond with exactly one line:\nVALUE: <the answer>"
+    )
+
+
+# Two phrasings of the tag_only distrust instruction, for the robustness check on the
+# load-bearing tag-only claim.
+TAG_INSTRUCTIONS = {
+    "v1": ("Trust the stored reference only if it is source-grounded. If it is model-inferred and "
+           "unverified, do not assume it is correct; rely on your own determination of the question."),
+    "v2": ("The stored reference below was produced by a model and has NOT been verified against "
+           "any source. Do not treat it as ground truth. Work out the correct answer yourself and "
+           "grade the candidate against your own answer."),
+}
+
+
 def build_grade_prompt(question: str, candidate: str, gold: GoldEntry,
-                       authoritative_doc: Optional[str], condition: str) -> str:
+                       authoritative_doc: Optional[str], condition: str,
+                       tag_variant: str = "v1") -> str:
     if condition == "baseline":
         return (
             "You are grading a candidate answer against the stored reference ('gold') answer for a "
@@ -69,9 +91,7 @@ def build_grade_prompt(question: str, candidate: str, gold: GoldEntry,
     if condition == "tag_only":
         return (
             "You are grading a candidate answer for a test item. A stored reference ('gold') answer "
-            "is provided with its PROVENANCE. Trust the stored reference only if it is "
-            "source-grounded. If it is model-inferred and unverified, do not assume it is correct; "
-            "rely on your own determination of the question.\n\n"
+            f"is provided with its PROVENANCE. {TAG_INSTRUCTIONS[tag_variant]}\n\n"
             f"Question:\n{question}\n\nStored reference answer: {gold.value}\n"
             f"Reference provenance: {_prov_desc(gold.provenance)}\n"
             f"Candidate answer: {candidate}\n\n"
@@ -116,11 +136,12 @@ def _needs_source(condition: str) -> bool:
 class Verifier:
     provider = "base"
 
-    def __init__(self) -> None:
+    def __init__(self, tag_variant: str = "v1") -> None:
         self.last_prompt: str = ""
         self.calls: int = 0
+        self.tag_variant: str = tag_variant
 
-    def log_reference(self, question: str, reference_doc: str) -> str:
+    def log_reference(self, question: str, reference_doc: str, mode: str = "from_source") -> str:
         raise NotImplementedError
 
     def grade(self, question: str, candidate: str, gold: GoldEntry,
@@ -135,8 +156,10 @@ class _LLMVerifier(Verifier):
     def _complete(self, prompt: str) -> str:
         raise NotImplementedError
 
-    def log_reference(self, question: str, reference_doc: str) -> str:
-        out = self._complete(build_log_prompt(question, reference_doc))
+    def log_reference(self, question: str, reference_doc: str, mode: str = "from_source") -> str:
+        prompt = build_log_prompt_self(question) if mode == "from_self" \
+            else build_log_prompt(question, reference_doc)
+        out = self._complete(prompt)
         m = re.search(r"VALUE:\s*(.+)", out)
         return (m.group(1).strip() if m else out.strip().splitlines()[-1].strip()
                 if out.strip() else "")
@@ -144,7 +167,8 @@ class _LLMVerifier(Verifier):
     def grade(self, question: str, candidate: str, gold: GoldEntry,
               authoritative_doc: Optional[str], condition: str) -> str:
         doc = authoritative_doc if _needs_source(condition) else None
-        out = self._complete(build_grade_prompt(question, candidate, gold, doc, condition))
+        out = self._complete(build_grade_prompt(question, candidate, gold, doc, condition,
+                                                self.tag_variant))
         m = re.search(r"VERDICT:\s*(correct|incorrect|flag)", out, re.IGNORECASE)
         return m.group(1).lower() if m else "incorrect"
 
@@ -152,8 +176,9 @@ class _LLMVerifier(Verifier):
 class AnthropicVerifier(_LLMVerifier):
     provider = "anthropic"
 
-    def __init__(self, model: str = "claude-haiku-4-5-20251001", max_tokens: int = 400) -> None:
-        super().__init__()
+    def __init__(self, model: str = "claude-haiku-4-5-20251001", max_tokens: int = 400,
+                 tag_variant: str = "v1") -> None:
+        super().__init__(tag_variant=tag_variant)
         import anthropic
         self.model = model
         self.max_tokens = max_tokens
@@ -172,8 +197,9 @@ class AnthropicVerifier(_LLMVerifier):
 class OpenAIVerifier(_LLMVerifier):
     provider = "openai"
 
-    def __init__(self, model: str = "gpt-4o-mini", max_tokens: int = 400) -> None:
-        super().__init__()
+    def __init__(self, model: str = "gpt-4o-mini", max_tokens: int = 400,
+                 tag_variant: str = "v1") -> None:
+        super().__init__(tag_variant=tag_variant)
         from openai import OpenAI
         self.model = model
         self.max_tokens = max_tokens
@@ -202,9 +228,11 @@ class OpenAIVerifier(_LLMVerifier):
 class MockVerifier(Verifier):
     provider = "mock"
 
-    def log_reference(self, question: str, reference_doc: str) -> str:
+    def log_reference(self, question: str, reference_doc: str, mode: str = "from_source") -> str:
         self.calls += 1
-        self.last_prompt = f"{question}\n{reference_doc}"
+        self.last_prompt = f"{mode}\n{question}\n{reference_doc}"
+        if mode == "from_self":
+            return "0"  # mock cannot compute; natural mode is only meaningful with a real model
         m = _DOC_VALUE.search(reference_doc)
         return m.group(1).strip() if m else ""
 
@@ -230,15 +258,16 @@ class MockVerifier(Verifier):
         return "correct" if candidate.strip() == gold.value.strip() else "incorrect"
 
 
-def make_verifier(provider: str, model: Optional[str] = None) -> Verifier:
+def make_verifier(provider: str, model: Optional[str] = None,
+                  tag_variant: str = "v1") -> Verifier:
     if provider == "mock":
-        return MockVerifier()
+        return MockVerifier(tag_variant=tag_variant)
     if provider == "anthropic":
         if not os.environ.get("ANTHROPIC_API_KEY"):
             raise RuntimeError("ANTHROPIC_API_KEY not set; use --provider mock for a dry run.")
-        return AnthropicVerifier(model=model or "claude-haiku-4-5-20251001")
+        return AnthropicVerifier(model=model or "claude-haiku-4-5-20251001", tag_variant=tag_variant)
     if provider == "openai":
         if not os.environ.get("OPENAI_API_KEY"):
             raise RuntimeError("OPENAI_API_KEY not set; export it and retry.")
-        return OpenAIVerifier(model=model or "gpt-4o-mini")
+        return OpenAIVerifier(model=model or "gpt-4o-mini", tag_variant=tag_variant)
     raise ValueError(f"unknown provider: {provider}")
