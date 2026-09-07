@@ -93,10 +93,10 @@ adoption rate against a held-out oracle and ablate what makes a grader resist it
 do not.
 
 \textbf{Self-authored evidence and model collapse.} RAG Collapse shows responses degrade when
-retrieved documents are self-authored~\cite{ragcollapse}, an analogue at the retrieval layer rather
-than the evaluation key. Epidemiological modeling of model collapse studies training-scale
-synthetic-data contamination~\cite{modelcollapse}. Neither concerns a verifier writing its own
-inference into a gold record and consuming it within one pass.
+retrieved documents are self-authored~\cite{ragcollapse}, an analogue at the retrieval layer, one
+step away from the evaluation key. Model collapse shows that training on recursively generated data
+degrades a model over generations~\cite{modelcollapse}, a training-scale phenomenon. Neither
+concerns a verifier writing its own inference into a gold record and consuming it within one pass.
 
 \textbf{Judge contamination and self-preference.} Preference Leakage identifies contamination when a
 judge and a data generator are related~\cite{prefleak}. That is a cross-model effect; our taint is
@@ -303,8 +303,9 @@ takes responsibility for the content.
 \begin{thebibliography}{00}
 \bibitem{ragcollapse} G. Druck and E. Smith, ``RAG Collapse: LLM Responses Collapse When Retrieved
 Documents Are Self-Authored,'' arXiv:2608.22118, 2026.
-\bibitem{modelcollapse} X. Wang, ``Epidemiology of Model Collapse: Modeling Synthetic Data
-Contamination via Bilayer SIR Dynamics,'' arXiv:2606.05168, 2026.
+\bibitem{modelcollapse} I. Shumailov, Z. Shumaylov, Y. Zhao, N. Papernot, R. Anderson, and Y. Gal,
+``AI models collapse when trained on recursively generated data,'' \emph{Nature}, vol. 631, pp.
+755-759, 2024, doi:10.1038/s41586-024-07566-y.
 \bibitem{prefleak} D. Li \emph{et al.}, ``Preference Leakage: A Contamination Problem in
 LLM-as-a-judge,'' in \emph{Proc. ICLR}, 2026. arXiv:2502.01534.
 \bibitem{oracleproblem} S. Ball\i, ``The Test Oracle Problem in Synthetic LLM-as-Judge Corpora:
