@@ -32,7 +32,7 @@ grader follows the self-authored value against the oracle), and we ablate a guar
 parts, a provenance tag and the authoritative source, to see which drives resistance. Across four
 models from two providers (pooled $n=240$ each) the baseline grader adopts the self-authored value
 in almost all eligible episodes. Surfacing the source removes adoption for every model. A provenance
-tag on its own is model-dependent: it nearly eliminates adoption for one model yet barely moves a
+tag on its own is model-dependent. It nearly eliminates adoption for one model and barely moves a
 small model that keeps trusting its own unverified gold. All results are bounded to the synthetic
 pipeline and the models tested; we make no claim about real-world prevalence. The benchmark and
 harness are packaged as an MIT-licensed, reproducible repository.
@@ -88,8 +88,8 @@ self-authored tests in heuristic self-improving agents are unreliable: self-assi
 near perfect while deployment performance degrades, and they add an external audit
 (SEAL)~\cite{selfauthored}. Sengupta gates self-modifying agents with anytime-valid
 certificates~\cite{seacert}. Both concern a self-improving agent inflating its own success signal
-over many iterations. Our object is different: a single verifier that writes one inference into an
-evaluation key and a downstream grader that consumes it as gold within one pass. We measure the
+over many iterations. Our object is different. A single verifier writes one inference into an
+evaluation key, and a downstream grader consumes it as gold within one pass. We measure the
 adoption rate against a held-out oracle and ablate what makes a grader resist it, which those works
 do not.
 
@@ -107,7 +107,7 @@ intra-pipeline and requires only one verifier.
 corpora shows generator faults can distort or erase the intended signal~\cite{oracleproblem}, and
 work auditing feedback-driven evolution shows a generated single-reference oracle can inflate
 measured gains~\cite{feedbackevo}. These concern faults in how the oracle or corpus is generated. We
-instead hold the oracle fixed and measure whether a self-authored value is adopted against it.
+hold the oracle fixed and measure whether a self-authored value is adopted against it.
 
 \textbf{Self-poisoning of agent artifacts.} EVOMAL demonstrates self-poisoning of a shared
 coding-agent skill library, where malicious skills propagate through retrieve-and-imitate
@@ -237,10 +237,10 @@ Three findings hold on this synthetic pipeline. First, provenance taint is induc
 logging step reads imperfect material, the recorded gold diverges from the oracle, and a baseline
 grader that defers to the record propagates that divergence into a wrong grade, across every model
 tested. Second, the failure is a genuine model decision. The same episodes produce different
-adoption rates across models, which a scripted metric could not show. Third, and most useful, the
-two parts of the guardrail do different work. The authoritative source reliably prevents adoption
-everywhere. A provenance label on its own is unreliable: its effect ranges from near-total
-(Haiku 4.5) to negligible (GPT-4o-mini). A weaker verifier needs the source; a warning that its
+adoption rates across models, which a scripted metric could not show. Third, the two parts of the
+guardrail do different work. The authoritative source reliably prevents adoption everywhere. A
+provenance label on its own is unreliable. Its effect ranges from near-total (Haiku 4.5) to
+negligible (GPT-4o-mini). A weaker verifier needs the source; a warning that its
 reference is unverified does little on its own.
 
 The practical reading for on-device verifier pipelines, where the verifier is often a small model,
@@ -266,8 +266,8 @@ Two further checks. First, we re-ran \texttt{tag\_only} with a second phrasing o
 instruction; the source and guardrail conditions were unchanged. The tag-alone effect was stable
 for three models (Haiku $0.05\!\to\!0.05$, Sonnet $0.15\!\to\!0.18$, GPT-4o-mini $0.97\!\to\!0.97$)
 but not for GPT-4.1 ($0.31\!\to\!0.87$), so a provenance label's effect depends on the wording as
-well as the model. This reinforces the main reading: the label alone is an unreliable intervention,
-while the source is stable across both phrasings. Second, the correct self-logs from natural mode
+well as the model. This reinforces the main reading. The label alone is an unreliable intervention,
+and the source is stable across both phrasings. Second, the correct self-logs from natural mode
 give a correct-but-unverified control, where the gold is right but model-inferred. The guardrail
 rarely rejects such an answer (Sonnet $0.00$ of $58$, Haiku $0.05$ of $88$, GPT-4.1 $0.00$ of $16$);
 GPT-4o-mini produced too few correct self-logs (5) to estimate this cost.
