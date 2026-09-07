@@ -9,7 +9,7 @@
 
 \begin{document}
 
-\title{Measuring Eval-Set Self-Poisoning: A Synthetic Benchmark for Provenance Taint in
+\title{Measuring Eval-Set Self-Contamination: A Synthetic Benchmark for Provenance Taint in
 On-Device Verifier Pipelines}
 
 \author{\IEEEauthorblockN{Agni Tripathi}
@@ -23,7 +23,7 @@ On-device agentic systems increasingly gate their own actions with a local verif
 a reference answer and later grades against it. We study a failure that lives inside a single such
 pipeline: a verifier writes its own model-mediated inference into an evaluation log, that value is
 promoted to ``gold'' without provenance discipline, and a downstream gold-dependent decision then
-consumes it as ground truth. We call this eval-set self-poisoning through provenance taint. We
+consumes it as ground truth. We call this eval-set self-contamination through provenance taint. We
 build a fully synthetic, self-contained benchmark that induces the failure under controlled
 conditions and measures it with a real large language model verifier whose decisions are scored
 against an immutable oracle held outside the writable pipeline. On matched tainted and clean
@@ -54,7 +54,8 @@ that material is imperfect, the recorded value is wrong. With no discipline abou
 came from, a provisional, model-inferred reading is promoted to ground truth. In a second step a
 downstream gold-dependent decision grades a candidate against the stored value and, if it defers to
 the record, marks a correct candidate wrong. The pipeline is now deferring to a value the pipeline
-itself wrote. We call this eval-set self-poisoning through provenance taint.
+itself wrote. We call this eval-set self-contamination through provenance taint. It is
+self-inflicted, with no adversary, which sets it apart from data or memory poisoning.
 
 Model collapse describes a training-scale process, and judge leakage involves two related models.
 The failure here needs only one verifier inside one pass: author, store, consume. The question we
@@ -110,11 +111,11 @@ instead hold the oracle fixed and measure whether a self-authored value is adopt
 
 \textbf{Self-poisoning of agent artifacts.} EVOMAL demonstrates self-poisoning of a shared
 coding-agent skill library, where malicious skills propagate through retrieve-and-imitate
-loops~\cite{evomal}. The object there is a shared skill library. Our failure concerns an
-evaluation key that a downstream decision consumes as gold.
+loops~\cite{evomal}. That is an adversarial attack on a shared skill library. Our failure concerns
+an evaluation key that a downstream decision consumes as gold, and it arises without an adversary.
 
 \textbf{Construction-side avoidance.} Ground Truth First inverts benchmark construction so gold
-facts are emitted before any model text, validated by a fidelity verifier, which avoids self-poisoning
+facts are emitted before any model text, validated by a fidelity verifier, which avoids self-contamination
 by design~\cite{groundtruthfirst}. This is complementary. It prescribes how to build a clean
 benchmark; it does not provide an instrument that measures the failure when a pipeline is not built
 gold-first. Our benchmark is that instrument.
@@ -147,7 +148,7 @@ identifier. A verifier that logs a wrong value from imperfect context is therefo
 
 \textbf{Stage B, grading (the downstream decision).} The verifier grades a candidate, set to the
 true answer, against the stored gold. We run a $2\times2$ ablation over what the grader is shown,
-to separate whether resistance to a self-poisoned gold comes from the verification-provenance
+to separate whether resistance to a self-contaminated gold comes from the verification-provenance
 \emph{tag} or from the authoritative \emph{source}: \texttt{baseline} sees only the stored value;
 \texttt{tag\_only} adds the provenance tag with an instruction to distrust an unverified reference,
 but no source; \texttt{source\_only} adds the source but no provenance tag; \texttt{guardrail} adds
@@ -256,7 +257,7 @@ then equals the verifier's unaided error rate, which is capability-graded (Sonne
 Haiku 4.5 $0.27$, GPT-4.1 $0.87$, GPT-4o-mini $0.96$). Where self-errors are frequent enough to
 measure, the pattern reproduces without any distractor: baseline adoption is $0.72$ to $0.81$, the
 source drives adoption down, and the tag-alone gradient persists (GPT-4o-mini $0.73$, GPT-4.1 and
-Haiku $0.19$). Sonnet 4.6 self-poisons too rarely (2 episodes) to estimate its adoption. One
+Haiku $0.19$). Sonnet 4.6 self-contaminates too rarely (2 episodes) to estimate its adoption. One
 caveat: natural-mode eligible episodes are selected to the hardest items, so \texttt{source\_only}
 is a little higher there (Haiku $0.22$).
 
@@ -282,7 +283,7 @@ false-alarm cost should be read as an existence result about the tradeoff. It is
 operating point.
 
 \section{Conclusion}
-We framed eval-set self-poisoning through provenance taint as a within-pipeline failure, built a
+We framed eval-set self-contamination through provenance taint as a within-pipeline failure, built a
 self-contained synthetic benchmark that induces it, and measured it with a real verifier scored
 against an immutable oracle held outside the writable pipeline. The taint-adoption rate and the
 recall and false-alarm cost of a provenance guardrail give a first controlled instrument for a
