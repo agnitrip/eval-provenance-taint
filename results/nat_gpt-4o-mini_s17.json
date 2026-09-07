@@ -1,0 +1,1010 @@
+{
+  "meta": {
+    "provider": "openai",
+    "model": "gpt-4o-mini",
+    "n": 60,
+    "seed": 17,
+    "taint_mode": "natural",
+    "tag_variant": "v1",
+    "verifier_calls": 300,
+    "scientific": true,
+    "note": "Real verifier decisions. Claims bounded to this synthetic pipeline/model."
+  },
+  "summary": {
+    "counts": {
+      "total": 60,
+      "eligible": 58,
+      "clean_correct": 2
+    },
+    "self_error_rate": 0.9667,
+    "conditions": {
+      "baseline": {
+        "taint_adoption": {
+          "p": 0.8103,
+          "lo": 0.6915,
+          "hi": 0.8907,
+          "n": 58
+        },
+        "prevented_adoption": {
+          "p": 0.1897,
+          "lo": 0.1093,
+          "hi": 0.3085,
+          "n": 58
+        },
+        "flag_rate": 0.0,
+        "false_alarm": {
+          "p": 0.0,
+          "lo": 0.0,
+          "hi": 0.6576,
+          "n": 2
+        }
+      },
+      "tag_only": {
+        "taint_adoption": {
+          "p": 0.7241,
+          "lo": 0.598,
+          "hi": 0.8225,
+          "n": 58
+        },
+        "prevented_adoption": {
+          "p": 0.2759,
+          "lo": 0.1775,
+          "hi": 0.402,
+          "n": 58
+        },
+        "flag_rate": 0.2759,
+        "false_alarm": {
+          "p": 1.0,
+          "lo": 0.3424,
+          "hi": 1.0,
+          "n": 2
+        }
+      },
+      "source_only": {
+        "taint_adoption": {
+          "p": 0.1379,
+          "lo": 0.0716,
+          "hi": 0.2493,
+          "n": 58
+        },
+        "prevented_adoption": {
+          "p": 0.8621,
+          "lo": 0.7507,
+          "hi": 0.9284,
+          "n": 58
+        },
+        "flag_rate": 0.0,
+        "false_alarm": {
+          "p": 0.0,
+          "lo": 0.0,
+          "hi": 0.6576,
+          "n": 2
+        }
+      },
+      "guardrail": {
+        "taint_adoption": {
+          "p": 0.0,
+          "lo": 0.0,
+          "hi": 0.0621,
+          "n": 58
+        },
+        "prevented_adoption": {
+          "p": 1.0,
+          "lo": 0.9379,
+          "hi": 1.0,
+          "n": 58
+        },
+        "flag_rate": 0.8966,
+        "false_alarm": {
+          "p": 1.0,
+          "lo": 0.3424,
+          "hi": 1.0,
+          "n": 2
+        }
+      }
+    }
+  },
+  "per_template": {},
+  "episodes": [
+    {
+      "episode_id": "nat0000-modmath-h",
+      "template": "modmath",
+      "arm": "self",
+      "oracle": "95",
+      "logged_gold": "194",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "incorrect",
+        "source_only": "correct",
+        "guardrail": "flag"
+      }
+    },
+    {
+      "episode_id": "nat0001-unit-h",
+      "template": "unit",
+      "arm": "self",
+      "oracle": "39114",
+      "logged_gold": "39014 sprock",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "incorrect",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "nat0002-base-h",
+      "template": "base",
+      "arm": "self",
+      "oracle": "222122222",
+      "logged_gold": "2102100",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "incorrect",
+        "source_only": "correct",
+        "guardrail": "flag"
+      }
+    },
+    {
+      "episode_id": "nat0003-seq-h",
+      "template": "seq",
+      "arm": "self",
+      "oracle": "14360",
+      "logged_gold": "14184",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "incorrect",
+        "source_only": "incorrect",
+        "guardrail": "flag"
+      }
+    },
+    {
+      "episode_id": "nat0004-modmath-e",
+      "template": "modmath",
+      "arm": "self",
+      "oracle": "58",
+      "logged_gold": "37",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "incorrect",
+        "source_only": "correct",
+        "guardrail": "flag"
+      }
+    },
+    {
+      "episode_id": "nat0005-unit-e",
+      "template": "unit",
+      "arm": "self",
+      "oracle": "972",
+      "logged_gold": "972 sprock",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "flag",
+        "source_only": "correct",
+        "guardrail": "flag"
+      }
+    },
+    {
+      "episode_id": "nat0006-base-e",
+      "template": "base",
+      "arm": "self",
+      "oracle": "14060",
+      "logged_gold": "10546",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "incorrect",
+        "source_only": "correct",
+        "guardrail": "flag"
+      }
+    },
+    {
+      "episode_id": "nat0007-seq-e",
+      "template": "seq",
+      "arm": "self",
+      "oracle": "970",
+      "logged_gold": "934",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "incorrect",
+        "source_only": "incorrect",
+        "guardrail": "flag"
+      }
+    },
+    {
+      "episode_id": "nat0008-modmath-h",
+      "template": "modmath",
+      "arm": "self",
+      "oracle": "452",
+      "logged_gold": "292",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "incorrect",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "nat0009-unit-h",
+      "template": "unit",
+      "arm": "self",
+      "oracle": "13572",
+      "logged_gold": "13692 sprock",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "incorrect",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "nat0010-base-h",
+      "template": "base",
+      "arm": "self",
+      "oracle": "63601",
+      "logged_gold": "43246",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "incorrect",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "nat0011-seq-h",
+      "template": "seq",
+      "arm": "self",
+      "oracle": "22738",
+      "logged_gold": "22667",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "incorrect",
+        "source_only": "incorrect",
+        "guardrail": "flag"
+      }
+    },
+    {
+      "episode_id": "nat0012-modmath-e",
+      "template": "modmath",
+      "arm": "self",
+      "oracle": "3",
+      "logged_gold": "34",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "incorrect",
+        "source_only": "correct",
+        "guardrail": "flag"
+      }
+    },
+    {
+      "episode_id": "nat0013-unit-e",
+      "template": "unit",
+      "arm": "self",
+      "oracle": "5908",
+      "logged_gold": "5908 sprock",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "flag",
+        "source_only": "correct",
+        "guardrail": "flag"
+      }
+    },
+    {
+      "episode_id": "nat0014-base-e",
+      "template": "base",
+      "arm": "self",
+      "oracle": "32104",
+      "logged_gold": "33104",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "incorrect",
+        "source_only": "correct",
+        "guardrail": "flag"
+      }
+    },
+    {
+      "episode_id": "nat0015-seq-e",
+      "template": "seq",
+      "arm": "self",
+      "oracle": "276",
+      "logged_gold": "258",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "incorrect",
+        "source_only": "correct",
+        "guardrail": "flag"
+      }
+    },
+    {
+      "episode_id": "nat0016-modmath-h",
+      "template": "modmath",
+      "arm": "self",
+      "oracle": "156",
+      "logged_gold": "83",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "incorrect",
+        "source_only": "correct",
+        "guardrail": "flag"
+      }
+    },
+    {
+      "episode_id": "nat0017-unit-h",
+      "template": "unit",
+      "arm": "self",
+      "oracle": "17120",
+      "logged_gold": "17120 sprock",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "flag",
+        "source_only": "correct",
+        "guardrail": "flag"
+      }
+    },
+    {
+      "episode_id": "nat0018-base-h",
+      "template": "base",
+      "arm": "self",
+      "oracle": "412134",
+      "logged_gold": "201224",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "incorrect",
+        "source_only": "correct",
+        "guardrail": "flag"
+      }
+    },
+    {
+      "episode_id": "nat0019-seq-h",
+      "template": "seq",
+      "arm": "self",
+      "oracle": "12617",
+      "logged_gold": "12457",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "incorrect",
+        "source_only": "correct",
+        "guardrail": "flag"
+      }
+    },
+    {
+      "episode_id": "nat0020-modmath-e",
+      "template": "modmath",
+      "arm": "self",
+      "oracle": "30",
+      "logged_gold": "31",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "incorrect",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "nat0021-unit-e",
+      "template": "unit",
+      "arm": "self",
+      "oracle": "1242",
+      "logged_gold": "1242 sprock",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "flag",
+        "source_only": "correct",
+        "guardrail": "flag"
+      }
+    },
+    {
+      "episode_id": "nat0022-base-e",
+      "template": "base",
+      "arm": "self",
+      "oracle": "2011020",
+      "logged_gold": "2202000",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "incorrect",
+        "source_only": "correct",
+        "guardrail": "flag"
+      }
+    },
+    {
+      "episode_id": "nat0023-seq-e",
+      "template": "seq",
+      "arm": "self",
+      "oracle": "213",
+      "logged_gold": "189",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "incorrect",
+        "source_only": "correct",
+        "guardrail": "flag"
+      }
+    },
+    {
+      "episode_id": "nat0024-modmath-h",
+      "template": "modmath",
+      "arm": "self",
+      "oracle": "166",
+      "logged_gold": "164",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "incorrect",
+        "source_only": "correct",
+        "guardrail": "flag"
+      }
+    },
+    {
+      "episode_id": "nat0025-unit-h",
+      "template": "unit",
+      "arm": "self",
+      "oracle": "34684",
+      "logged_gold": "34784 sprock",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "incorrect",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "nat0026-base-h",
+      "template": "base",
+      "arm": "self",
+      "oracle": "10111001011",
+      "logged_gold": "2202002",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "flag",
+        "source_only": "correct",
+        "guardrail": "flag"
+      }
+    },
+    {
+      "episode_id": "nat0027-seq-h",
+      "template": "seq",
+      "arm": "self",
+      "oracle": "9408",
+      "logged_gold": "9176",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "incorrect",
+        "source_only": "correct",
+        "guardrail": "flag"
+      }
+    },
+    {
+      "episode_id": "nat0028-modmath-e",
+      "template": "modmath",
+      "arm": "self",
+      "oracle": "34",
+      "logged_gold": "34",
+      "provenance": "model-inferred",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "flag",
+        "source_only": "correct",
+        "guardrail": "flag"
+      }
+    },
+    {
+      "episode_id": "nat0029-unit-e",
+      "template": "unit",
+      "arm": "self",
+      "oracle": "1507",
+      "logged_gold": "1507 sprock",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "flag",
+        "source_only": "correct",
+        "guardrail": "flag"
+      }
+    },
+    {
+      "episode_id": "nat0030-base-e",
+      "template": "base",
+      "arm": "self",
+      "oracle": "11002000",
+      "logged_gold": "1102000",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "incorrect",
+        "source_only": "incorrect",
+        "guardrail": "flag"
+      }
+    },
+    {
+      "episode_id": "nat0031-seq-e",
+      "template": "seq",
+      "arm": "self",
+      "oracle": "856",
+      "logged_gold": "856",
+      "provenance": "model-inferred",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "flag",
+        "source_only": "correct",
+        "guardrail": "flag"
+      }
+    },
+    {
+      "episode_id": "nat0032-modmath-h",
+      "template": "modmath",
+      "arm": "self",
+      "oracle": "107",
+      "logged_gold": "37",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "incorrect",
+        "source_only": "correct",
+        "guardrail": "flag"
+      }
+    },
+    {
+      "episode_id": "nat0033-unit-h",
+      "template": "unit",
+      "arm": "self",
+      "oracle": "23472",
+      "logged_gold": "23472 sprock",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "flag",
+        "source_only": "correct",
+        "guardrail": "flag"
+      }
+    },
+    {
+      "episode_id": "nat0034-base-h",
+      "template": "base",
+      "arm": "self",
+      "oracle": "215213",
+      "logged_gold": "105626",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "incorrect",
+        "source_only": "correct",
+        "guardrail": "flag"
+      }
+    },
+    {
+      "episode_id": "nat0035-seq-h",
+      "template": "seq",
+      "arm": "self",
+      "oracle": "8809",
+      "logged_gold": "8557",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "incorrect",
+        "source_only": "correct",
+        "guardrail": "flag"
+      }
+    },
+    {
+      "episode_id": "nat0036-modmath-e",
+      "template": "modmath",
+      "arm": "self",
+      "oracle": "8",
+      "logged_gold": "31",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "incorrect",
+        "source_only": "correct",
+        "guardrail": "flag"
+      }
+    },
+    {
+      "episode_id": "nat0037-unit-e",
+      "template": "unit",
+      "arm": "self",
+      "oracle": "2648",
+      "logged_gold": "2648 sprock",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "flag",
+        "source_only": "correct",
+        "guardrail": "flag"
+      }
+    },
+    {
+      "episode_id": "nat0038-base-e",
+      "template": "base",
+      "arm": "self",
+      "oracle": "1112",
+      "logged_gold": "1111",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "flag",
+        "source_only": "incorrect",
+        "guardrail": "flag"
+      }
+    },
+    {
+      "episode_id": "nat0039-seq-e",
+      "template": "seq",
+      "arm": "self",
+      "oracle": "681",
+      "logged_gold": "650",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "incorrect",
+        "source_only": "correct",
+        "guardrail": "flag"
+      }
+    },
+    {
+      "episode_id": "nat0040-modmath-h",
+      "template": "modmath",
+      "arm": "self",
+      "oracle": "255",
+      "logged_gold": "164",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "incorrect",
+        "source_only": "correct",
+        "guardrail": "flag"
+      }
+    },
+    {
+      "episode_id": "nat0041-unit-h",
+      "template": "unit",
+      "arm": "self",
+      "oracle": "22682",
+      "logged_gold": "22682 sprock",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "flag",
+        "source_only": "correct",
+        "guardrail": "flag"
+      }
+    },
+    {
+      "episode_id": "nat0042-base-h",
+      "template": "base",
+      "arm": "self",
+      "oracle": "1201011112",
+      "logged_gold": "1102002001",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "flag",
+        "source_only": "correct",
+        "guardrail": "flag"
+      }
+    },
+    {
+      "episode_id": "nat0043-seq-h",
+      "template": "seq",
+      "arm": "self",
+      "oracle": "10517",
+      "logged_gold": "10305",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "incorrect",
+        "source_only": "incorrect",
+        "guardrail": "flag"
+      }
+    },
+    {
+      "episode_id": "nat0044-modmath-e",
+      "template": "modmath",
+      "arm": "self",
+      "oracle": "31",
+      "logged_gold": "37",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "incorrect",
+        "source_only": "correct",
+        "guardrail": "flag"
+      }
+    },
+    {
+      "episode_id": "nat0045-unit-e",
+      "template": "unit",
+      "arm": "self",
+      "oracle": "832",
+      "logged_gold": "832 sprock",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "flag",
+        "source_only": "correct",
+        "guardrail": "flag"
+      }
+    },
+    {
+      "episode_id": "nat0046-base-e",
+      "template": "base",
+      "arm": "self",
+      "oracle": "10101201",
+      "logged_gold": "2202002",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "incorrect",
+        "source_only": "correct",
+        "guardrail": "flag"
+      }
+    },
+    {
+      "episode_id": "nat0047-seq-e",
+      "template": "seq",
+      "arm": "self",
+      "oracle": "265",
+      "logged_gold": "249",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "incorrect",
+        "source_only": "correct",
+        "guardrail": "flag"
+      }
+    },
+    {
+      "episode_id": "nat0048-modmath-h",
+      "template": "modmath",
+      "arm": "self",
+      "oracle": "241",
+      "logged_gold": "187",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "incorrect",
+        "source_only": "correct",
+        "guardrail": "flag"
+      }
+    },
+    {
+      "episode_id": "nat0049-unit-h",
+      "template": "unit",
+      "arm": "self",
+      "oracle": "24569",
+      "logged_gold": "24569 sprock",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "flag",
+        "source_only": "correct",
+        "guardrail": "flag"
+      }
+    },
+    {
+      "episode_id": "nat0050-base-h",
+      "template": "base",
+      "arm": "self",
+      "oracle": "10201221120",
+      "logged_gold": "22020000",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "flag",
+        "source_only": "correct",
+        "guardrail": "flag"
+      }
+    },
+    {
+      "episode_id": "nat0051-seq-h",
+      "template": "seq",
+      "arm": "self",
+      "oracle": "22863",
+      "logged_gold": "22833",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "incorrect",
+        "source_only": "incorrect",
+        "guardrail": "flag"
+      }
+    },
+    {
+      "episode_id": "nat0052-modmath-e",
+      "template": "modmath",
+      "arm": "self",
+      "oracle": "21",
+      "logged_gold": "33",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "incorrect",
+        "source_only": "correct",
+        "guardrail": "flag"
+      }
+    },
+    {
+      "episode_id": "nat0053-unit-e",
+      "template": "unit",
+      "arm": "self",
+      "oracle": "804",
+      "logged_gold": "804 sprock",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "flag",
+        "source_only": "correct",
+        "guardrail": "flag"
+      }
+    },
+    {
+      "episode_id": "nat0054-base-e",
+      "template": "base",
+      "arm": "self",
+      "oracle": "1202100",
+      "logged_gold": "1102200",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "incorrect",
+        "source_only": "correct",
+        "guardrail": "flag"
+      }
+    },
+    {
+      "episode_id": "nat0055-seq-e",
+      "template": "seq",
+      "arm": "self",
+      "oracle": "873",
+      "logged_gold": "927",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "incorrect",
+        "source_only": "correct",
+        "guardrail": "flag"
+      }
+    },
+    {
+      "episode_id": "nat0056-modmath-h",
+      "template": "modmath",
+      "arm": "self",
+      "oracle": "171",
+      "logged_gold": "124",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "incorrect",
+        "source_only": "correct",
+        "guardrail": "flag"
+      }
+    },
+    {
+      "episode_id": "nat0057-unit-h",
+      "template": "unit",
+      "arm": "self",
+      "oracle": "16520",
+      "logged_gold": "16520 sprock",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "flag",
+        "source_only": "correct",
+        "guardrail": "flag"
+      }
+    },
+    {
+      "episode_id": "nat0058-base-h",
+      "template": "base",
+      "arm": "self",
+      "oracle": "1113121",
+      "logged_gold": "302201",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "incorrect",
+        "source_only": "correct",
+        "guardrail": "flag"
+      }
+    },
+    {
+      "episode_id": "nat0059-seq-h",
+      "template": "seq",
+      "arm": "self",
+      "oracle": "5463",
+      "logged_gold": "5334",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "incorrect",
+        "source_only": "incorrect",
+        "guardrail": "flag"
+      }
+    }
+  ]
+}

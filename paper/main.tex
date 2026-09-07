@@ -231,6 +231,30 @@ is that a stored reference should carry its provenance and the grader should be 
 source it was supposed to be grounded in. A provenance tag alone may not move a small verifier. The
 cost of surfacing both is a false-alarm rate, at most 0.05 here, that a deployment would tune.
 
+\section{Robustness}
+\subsection{Taint that is not planted}
+The main result induces taint with a distractor in the logging step. To check the failure is not
+an artifact of that plant, we add a natural mode: the verifier answers each item unaided and its
+own answer is logged as gold, so taint arises only from the verifier's own mistake. Eligibility
+then equals the verifier's unaided error rate, which is capability-graded (Sonnet 4.6 $0.03$,
+Haiku 4.5 $0.27$, GPT-4.1 $0.87$, GPT-4o-mini $0.96$). Where self-errors are frequent enough to
+measure, the pattern reproduces without any distractor: baseline adoption is $0.72$ to $0.81$, the
+source drives adoption down, and the tag-alone gradient persists (GPT-4o-mini $0.73$, GPT-4.1 and
+Haiku $0.19$). Sonnet 4.6 self-poisons too rarely (2 episodes) to estimate its adoption. One
+caveat: natural-mode eligible episodes are selected to the hardest items, so \texttt{source\_only}
+is a little higher there (Haiku $0.22$).
+
+\subsection{Instruction wording and the cost on correct answers}
+Two further checks. First, we re-ran \texttt{tag\_only} with a second phrasing of the distrust
+instruction; the source and guardrail conditions were unchanged. The tag-alone effect was stable
+for three models (Haiku $0.05\!\to\!0.05$, Sonnet $0.15\!\to\!0.18$, GPT-4o-mini $0.97\!\to\!0.97$)
+but not for GPT-4.1 ($0.31\!\to\!0.87$), so a provenance label's effect depends on the wording as
+well as the model. This reinforces the main reading: the label alone is an unreliable intervention,
+while the source is stable across both phrasings. Second, the correct self-logs from natural mode
+give a correct-but-unverified control, where the gold is right but model-inferred. The guardrail
+rarely rejects such an answer (Sonnet $0.00$ of $58$, Haiku $0.05$ of $88$, GPT-4.1 $0.00$ of $16$);
+GPT-4o-mini produced too few correct self-logs (5) to estimate this cost.
+
 \section{Limitations}
 The benchmark is synthetic and small in scope. The tasks are deterministic arithmetic-style items
 chosen so the oracle is unambiguous, which is not representative of open-ended judging. The taint is

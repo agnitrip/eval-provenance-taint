@@ -1,0 +1,1010 @@
+{
+  "meta": {
+    "provider": "anthropic",
+    "model": "claude-haiku-4-5-20251001",
+    "n": 60,
+    "seed": 7,
+    "taint_mode": "natural",
+    "tag_variant": "v1",
+    "verifier_calls": 300,
+    "scientific": true,
+    "note": "Real verifier decisions. Claims bounded to this synthetic pipeline/model."
+  },
+  "summary": {
+    "counts": {
+      "total": 60,
+      "eligible": 17,
+      "clean_correct": 43
+    },
+    "self_error_rate": 0.2833,
+    "conditions": {
+      "baseline": {
+        "taint_adoption": {
+          "p": 0.8235,
+          "lo": 0.5897,
+          "hi": 0.9381,
+          "n": 17
+        },
+        "prevented_adoption": {
+          "p": 0.1765,
+          "lo": 0.0619,
+          "hi": 0.4103,
+          "n": 17
+        },
+        "flag_rate": 0.0,
+        "false_alarm": {
+          "p": 0.0,
+          "lo": 0.0,
+          "hi": 0.082,
+          "n": 43
+        }
+      },
+      "tag_only": {
+        "taint_adoption": {
+          "p": 0.1765,
+          "lo": 0.0619,
+          "hi": 0.4103,
+          "n": 17
+        },
+        "prevented_adoption": {
+          "p": 0.8235,
+          "lo": 0.5897,
+          "hi": 0.9381,
+          "n": 17
+        },
+        "flag_rate": 0.0,
+        "false_alarm": {
+          "p": 0.0,
+          "lo": 0.0,
+          "hi": 0.082,
+          "n": 43
+        }
+      },
+      "source_only": {
+        "taint_adoption": {
+          "p": 0.1765,
+          "lo": 0.0619,
+          "hi": 0.4103,
+          "n": 17
+        },
+        "prevented_adoption": {
+          "p": 0.8235,
+          "lo": 0.5897,
+          "hi": 0.9381,
+          "n": 17
+        },
+        "flag_rate": 0.0,
+        "false_alarm": {
+          "p": 0.0,
+          "lo": 0.0,
+          "hi": 0.082,
+          "n": 43
+        }
+      },
+      "guardrail": {
+        "taint_adoption": {
+          "p": 0.0,
+          "lo": 0.0,
+          "hi": 0.1843,
+          "n": 17
+        },
+        "prevented_adoption": {
+          "p": 1.0,
+          "lo": 0.8157,
+          "hi": 1.0,
+          "n": 17
+        },
+        "flag_rate": 0.0,
+        "false_alarm": {
+          "p": 0.0465,
+          "lo": 0.0128,
+          "hi": 0.1546,
+          "n": 43
+        }
+      }
+    }
+  },
+  "per_template": {},
+  "episodes": [
+    {
+      "episode_id": "nat0000-modmath-h",
+      "template": "modmath",
+      "arm": "self",
+      "oracle": "298",
+      "logged_gold": "298",
+      "provenance": "model-inferred",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "nat0001-unit-h",
+      "template": "unit",
+      "arm": "self",
+      "oracle": "21708",
+      "logged_gold": "21708",
+      "provenance": "model-inferred",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "nat0002-base-h",
+      "template": "base",
+      "arm": "self",
+      "oracle": "310214",
+      "logged_gold": "310214",
+      "provenance": "model-inferred",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "flag"
+      }
+    },
+    {
+      "episode_id": "nat0003-seq-h",
+      "template": "seq",
+      "arm": "self",
+      "oracle": "4395",
+      "logged_gold": "4437",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "nat0004-modmath-e",
+      "template": "modmath",
+      "arm": "self",
+      "oracle": "27",
+      "logged_gold": "27",
+      "provenance": "model-inferred",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "nat0005-unit-e",
+      "template": "unit",
+      "arm": "self",
+      "oracle": "5104",
+      "logged_gold": "5104",
+      "provenance": "model-inferred",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "nat0006-base-e",
+      "template": "base",
+      "arm": "self",
+      "oracle": "13312",
+      "logged_gold": "13312\u2087",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "nat0007-seq-e",
+      "template": "seq",
+      "arm": "self",
+      "oracle": "786",
+      "logged_gold": "786",
+      "provenance": "model-inferred",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "nat0008-modmath-h",
+      "template": "modmath",
+      "arm": "self",
+      "oracle": "44",
+      "logged_gold": "16",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "incorrect",
+        "source_only": "incorrect",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "nat0009-unit-h",
+      "template": "unit",
+      "arm": "self",
+      "oracle": "18060",
+      "logged_gold": "18060",
+      "provenance": "model-inferred",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "nat0010-base-h",
+      "template": "base",
+      "arm": "self",
+      "oracle": "2333314",
+      "logged_gold": "2333314",
+      "provenance": "model-inferred",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "nat0011-seq-h",
+      "template": "seq",
+      "arm": "self",
+      "oracle": "11426",
+      "logged_gold": "11386",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "nat0012-modmath-e",
+      "template": "modmath",
+      "arm": "self",
+      "oracle": "25",
+      "logged_gold": "25",
+      "provenance": "model-inferred",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "nat0013-unit-e",
+      "template": "unit",
+      "arm": "self",
+      "oracle": "3276",
+      "logged_gold": "3276",
+      "provenance": "model-inferred",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "nat0014-base-e",
+      "template": "base",
+      "arm": "self",
+      "oracle": "1514",
+      "logged_gold": "1514\u2087",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "nat0015-seq-e",
+      "template": "seq",
+      "arm": "self",
+      "oracle": "273",
+      "logged_gold": "273",
+      "provenance": "model-inferred",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "nat0016-modmath-h",
+      "template": "modmath",
+      "arm": "self",
+      "oracle": "34",
+      "logged_gold": "34",
+      "provenance": "model-inferred",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "nat0017-unit-h",
+      "template": "unit",
+      "arm": "self",
+      "oracle": "93351",
+      "logged_gold": "93351",
+      "provenance": "model-inferred",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "nat0018-base-h",
+      "template": "base",
+      "arm": "self",
+      "oracle": "3134033",
+      "logged_gold": "3134033",
+      "provenance": "model-inferred",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "nat0019-seq-h",
+      "template": "seq",
+      "arm": "self",
+      "oracle": "5632",
+      "logged_gold": "5630",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "correct",
+        "source_only": "incorrect",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "nat0020-modmath-e",
+      "template": "modmath",
+      "arm": "self",
+      "oracle": "24",
+      "logged_gold": "24",
+      "provenance": "model-inferred",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "nat0021-unit-e",
+      "template": "unit",
+      "arm": "self",
+      "oracle": "3192",
+      "logged_gold": "3192",
+      "provenance": "model-inferred",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "nat0022-base-e",
+      "template": "base",
+      "arm": "self",
+      "oracle": "1664",
+      "logged_gold": "1664\u2087",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "nat0023-seq-e",
+      "template": "seq",
+      "arm": "self",
+      "oracle": "615",
+      "logged_gold": "615",
+      "provenance": "model-inferred",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "nat0024-modmath-h",
+      "template": "modmath",
+      "arm": "self",
+      "oracle": "324",
+      "logged_gold": "324",
+      "provenance": "model-inferred",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "nat0025-unit-h",
+      "template": "unit",
+      "arm": "self",
+      "oracle": "108532",
+      "logged_gold": "108532",
+      "provenance": "model-inferred",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "nat0026-base-h",
+      "template": "base",
+      "arm": "self",
+      "oracle": "264356",
+      "logged_gold": "264356",
+      "provenance": "model-inferred",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "nat0027-seq-h",
+      "template": "seq",
+      "arm": "self",
+      "oracle": "28042",
+      "logged_gold": "27977",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "nat0028-modmath-e",
+      "template": "modmath",
+      "arm": "self",
+      "oracle": "5",
+      "logged_gold": "5",
+      "provenance": "model-inferred",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "nat0029-unit-e",
+      "template": "unit",
+      "arm": "self",
+      "oracle": "816",
+      "logged_gold": "816",
+      "provenance": "model-inferred",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "nat0030-base-e",
+      "template": "base",
+      "arm": "self",
+      "oracle": "3660",
+      "logged_gold": "3660\u2087",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "nat0031-seq-e",
+      "template": "seq",
+      "arm": "self",
+      "oracle": "207",
+      "logged_gold": "207",
+      "provenance": "model-inferred",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "nat0032-modmath-h",
+      "template": "modmath",
+      "arm": "self",
+      "oracle": "236",
+      "logged_gold": "236",
+      "provenance": "model-inferred",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "nat0033-unit-h",
+      "template": "unit",
+      "arm": "self",
+      "oracle": "27734",
+      "logged_gold": "27734",
+      "provenance": "model-inferred",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "nat0034-base-h",
+      "template": "base",
+      "arm": "self",
+      "oracle": "2144310",
+      "logged_gold": "2144310",
+      "provenance": "model-inferred",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "flag"
+      }
+    },
+    {
+      "episode_id": "nat0035-seq-h",
+      "template": "seq",
+      "arm": "self",
+      "oracle": "4374",
+      "logged_gold": "4374",
+      "provenance": "model-inferred",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "nat0036-modmath-e",
+      "template": "modmath",
+      "arm": "self",
+      "oracle": "6",
+      "logged_gold": "6",
+      "provenance": "model-inferred",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "nat0037-unit-e",
+      "template": "unit",
+      "arm": "self",
+      "oracle": "7296",
+      "logged_gold": "7296",
+      "provenance": "model-inferred",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "nat0038-base-e",
+      "template": "base",
+      "arm": "self",
+      "oracle": "44333",
+      "logged_gold": "44333\u2085",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "nat0039-seq-e",
+      "template": "seq",
+      "arm": "self",
+      "oracle": "779",
+      "logged_gold": "779",
+      "provenance": "model-inferred",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "nat0040-modmath-h",
+      "template": "modmath",
+      "arm": "self",
+      "oracle": "110",
+      "logged_gold": "110",
+      "provenance": "model-inferred",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "nat0041-unit-h",
+      "template": "unit",
+      "arm": "self",
+      "oracle": "61656",
+      "logged_gold": "61656",
+      "provenance": "model-inferred",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "nat0042-base-h",
+      "template": "base",
+      "arm": "self",
+      "oracle": "403620",
+      "logged_gold": "403620",
+      "provenance": "model-inferred",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "nat0043-seq-h",
+      "template": "seq",
+      "arm": "self",
+      "oracle": "4285",
+      "logged_gold": "4307",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "nat0044-modmath-e",
+      "template": "modmath",
+      "arm": "self",
+      "oracle": "37",
+      "logged_gold": "37",
+      "provenance": "model-inferred",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "nat0045-unit-e",
+      "template": "unit",
+      "arm": "self",
+      "oracle": "1400",
+      "logged_gold": "1400",
+      "provenance": "model-inferred",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "nat0046-base-e",
+      "template": "base",
+      "arm": "self",
+      "oracle": "6015",
+      "logged_gold": "6015\u2087",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "nat0047-seq-e",
+      "template": "seq",
+      "arm": "self",
+      "oracle": "426",
+      "logged_gold": "426",
+      "provenance": "model-inferred",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "nat0048-modmath-h",
+      "template": "modmath",
+      "arm": "self",
+      "oracle": "96",
+      "logged_gold": "96",
+      "provenance": "model-inferred",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "nat0049-unit-h",
+      "template": "unit",
+      "arm": "self",
+      "oracle": "10023",
+      "logged_gold": "10023",
+      "provenance": "model-inferred",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "nat0050-base-h",
+      "template": "base",
+      "arm": "self",
+      "oracle": "1100001002",
+      "logged_gold": "973",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "incorrect",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "nat0051-seq-h",
+      "template": "seq",
+      "arm": "self",
+      "oracle": "2258",
+      "logged_gold": "2262",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "nat0052-modmath-e",
+      "template": "modmath",
+      "arm": "self",
+      "oracle": "47",
+      "logged_gold": "47",
+      "provenance": "model-inferred",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "nat0053-unit-e",
+      "template": "unit",
+      "arm": "self",
+      "oracle": "657",
+      "logged_gold": "657",
+      "provenance": "model-inferred",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "nat0054-base-e",
+      "template": "base",
+      "arm": "self",
+      "oracle": "2233",
+      "logged_gold": "2233\u2087",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "nat0055-seq-e",
+      "template": "seq",
+      "arm": "self",
+      "oracle": "531",
+      "logged_gold": "531",
+      "provenance": "model-inferred",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "nat0056-modmath-h",
+      "template": "modmath",
+      "arm": "self",
+      "oracle": "307",
+      "logged_gold": "307",
+      "provenance": "model-inferred",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "nat0057-unit-h",
+      "template": "unit",
+      "arm": "self",
+      "oracle": "57720",
+      "logged_gold": "57720",
+      "provenance": "model-inferred",
+      "eligible": false,
+      "verdicts": {
+        "baseline": "correct",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "nat0058-base-h",
+      "template": "base",
+      "arm": "self",
+      "oracle": "1012202210",
+      "logged_gold": "1010220210",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "incorrect",
+        "source_only": "incorrect",
+        "guardrail": "correct"
+      }
+    },
+    {
+      "episode_id": "nat0059-seq-h",
+      "template": "seq",
+      "arm": "self",
+      "oracle": "15747",
+      "logged_gold": "15771",
+      "provenance": "model-inferred",
+      "eligible": true,
+      "verdicts": {
+        "baseline": "incorrect",
+        "tag_only": "correct",
+        "source_only": "correct",
+        "guardrail": "correct"
+      }
+    }
+  ]
+}
