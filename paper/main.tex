@@ -35,7 +35,7 @@ in almost all eligible episodes. Surfacing the source removes adoption for every
 tag on its own is model-dependent: it nearly eliminates adoption for one model yet barely moves a
 small model that keeps trusting its own unverified gold. All results are bounded to the synthetic
 pipeline and the models tested; we make no claim about real-world prevalence. The benchmark and
-harness are released as a reproducible artifact.
+harness are packaged as an MIT-licensed, reproducible repository.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -68,17 +68,29 @@ We make three contributions.
 matched conditions with explicit provenance identifiers, and an immutable external oracle that is
 architecturally held outside the writable pipeline.
 \item A measurement protocol whose central number, the taint-adoption rate, is a real verifier's
-decision scored against the oracle, not a scripted rate, together with the recall and false-alarm
-cost of a provenance-tag plus quote-source guardrail on clean controls.
+decision scored against the oracle. The harness never scripts the outcome. We also report the
+recall and false-alarm cost of a provenance-tag plus quote-source guardrail on clean controls.
 \item An empirical result across four models from two providers showing that the failure is
-inducible and measurable, and an ablation showing that the authoritative source, not the provenance
-label alone, is what reliably prevents adoption, with the label's effect ranging from near-total to
-negligible across models. All claims are bounded to the tested synthetic pipeline and models.
+inducible and measurable, and an ablation isolating the authoritative source as the reliable
+preventer of adoption. A provenance label alone is unreliable, with its effect ranging from
+near-total to negligible across models. All claims are bounded to the tested synthetic pipeline
+and models.
 \end{itemize}
 
 \section{Related Work and Distinction}
-Adjacent contamination loops are documented, but not the within-pipeline log-to-eval-key mechanism
-measured here.
+Adjacent contamination loops are documented. The within-pipeline log-to-eval-key mechanism measured
+here is not among them, and two recent works on self-authored verification come close enough to
+require differentiation.
+
+\textbf{Self-authored verification in self-improving agents.} Closest is Guo et al., who show that
+self-authored tests in heuristic self-improving agents are unreliable: self-assigned scores stay
+near perfect while deployment performance degrades, and they add an external audit
+(SEAL)~\cite{selfauthored}. Sengupta gates self-modifying agents with anytime-valid
+certificates~\cite{seacert}. Both concern a self-improving agent inflating its own success signal
+over many iterations. Our object is different: a single verifier that writes one inference into an
+evaluation key and a downstream grader that consumes it as gold within one pass. We measure the
+adoption rate against a held-out oracle and ablate what makes a grader resist it, which those works
+do not.
 
 \textbf{Self-authored evidence and model collapse.} RAG Collapse shows responses degrade when
 retrieved documents are self-authored~\cite{ragcollapse}, an analogue at the retrieval layer rather
@@ -117,7 +129,7 @@ ground truth against a held-out oracle, and how well a provenance guardrail catc
 Each episode is a deterministic, recomputable task with an unambiguous answer: modular arithmetic,
 unit conversion at a synthetic rate, base conversion, and arithmetic-sequence terms. Values are
 multi-step, which places the verifier in the realistic regime where it leans on provided reference
-material rather than recomputing. Episodes are emitted as item-matched pairs: for every drawn task
+material and does not recompute from scratch. Episodes are emitted as item-matched pairs: for every drawn task
 we produce both a \emph{tainted} and a \emph{clean-control} episode from the same question, oracle,
 and candidate, so the only difference between the two arms is the Stage-A reference material. In the
 tainted arm that material contains a distractor asserting a specific wrong value; in the clean-control
@@ -141,7 +153,7 @@ to separate whether resistance to a self-poisoned gold comes from the verificati
 but no source; \texttt{source\_only} adds the source but no provenance tag; \texttt{guardrail} adds
 both, and is instructed to trust the reference only if it is source-grounded and to flag a
 model-inferred reference that conflicts with the source. The provenance tag is a binary
-verification-status signal (source-grounded versus model-inferred), not a claim about who authored
+verification-status signal (source-grounded versus model-inferred). It does not encode who authored
 the reference.
 
 \subsection{Oracle isolation}
@@ -175,16 +187,19 @@ episodes (40 item-matched tainted/clean pairs) for each of three seeds (7, 17, 2
 $n=240$ per model, temperature $0$. Each episode uses five verifier calls: one Stage-A logging call
 and four Stage-B grading calls (the four ablation conditions). The same model plays both stages,
 matching the single-pipeline setting. Reference material, distractors, and the oracle are identical
-across models, so any difference in the reported rates is a property of the verifier, not the data.
+across models, so any difference in the reported rates is a property of the verifier, since the data
+is held constant.
 We report Wilson 95\% confidence intervals over the pooled eligible set.
 
 \section{Results}
 
 \begin{table}[t]
 \caption{Taint-adoption rate per ablation condition (synthetic pipeline, pooled $n=240$ per model,
-120 eligible tainted episodes). Lower is better. False-alarm on clean controls was $0.00$ for every
-model under \texttt{baseline}, \texttt{tag\_only}, and \texttt{source\_only}, and $0.00$--$0.05$
-under \texttt{guardrail}. Eligibility was $\geq 0.98$ for all models.}
+119 to 120 eligible tainted episodes). Lower is better. False-alarm on clean controls stayed low:
+$0.00$ for all models under \texttt{baseline}; at most $0.02$ under \texttt{tag\_only} and $0.01$
+under \texttt{source\_only} (both GPT-4o-mini, $0.00$ elsewhere); and up to $0.05$ under
+\texttt{guardrail} (Haiku $0.05$, GPT-4o-mini $0.03$, others $0.00$). Eligibility was $\geq 0.98$
+for all models.}
 \label{tab:main}
 \centering
 \begin{tabular}{lcccc}
@@ -212,8 +227,9 @@ adoption falls to 0.03 for Haiku 4.5 (Wilson 95\% CI [0.01, 0.07]) but stays at 
 ([0.93, 0.99]), with GPT-4.1 (0.40, [0.32, 0.49]) and Sonnet 4.6 (0.16) in between. A weaker verifier
 told that its stored gold is unverified still adopts it. The full \texttt{guardrail} (tag and
 source) removes adoption for all models (0.00, upper CI $\leq 0.03$), at a false-alarm cost of at
-most 0.05 on clean controls. All rates are over 119 to 120 eligible episodes per model and are
-reported as existence-and-magnitude results on this synthetic pipeline, not population estimates.
+most 0.05 on clean controls. All rates are over 119 to 120 eligible episodes per model. We report
+them as existence-and-magnitude results on this synthetic pipeline. They are not population
+estimates.
 
 \section{Discussion}
 Three findings hold on this synthetic pipeline. First, provenance taint is inducible: when the
@@ -222,9 +238,9 @@ grader that defers to the record propagates that divergence into a wrong grade, 
 tested. Second, the failure is a genuine model decision. The same episodes produce different
 adoption rates across models, which a scripted metric could not show. Third, and most useful, the
 two parts of the guardrail do different work. The authoritative source reliably prevents adoption
-everywhere. A provenance label on its own is not a reliable fix: its effect ranges from near-total
+everywhere. A provenance label on its own is unreliable: its effect ranges from near-total
 (Haiku 4.5) to negligible (GPT-4o-mini). A weaker verifier needs the source; a warning that its
-reference is unverified is not enough on its own.
+reference is unverified does little on its own.
 
 The practical reading for on-device verifier pipelines, where the verifier is often a small model,
 is that a stored reference should carry its provenance and the grader should be able to consult the
@@ -262,7 +278,7 @@ induced through a distractor in the logging step, a controlled proxy for imperfe
 context. Every number is bounded to the tested pipeline and models. We make no estimate of how often
 provenance taint occurs in any deployed system; establishing prevalence would require instrumented
 field data, which this work does not have. The guardrail we test is deliberately simple, and its
-false-alarm cost should be read as an existence result about the tradeoff, not an optimized
+false-alarm cost should be read as an existence result about the tradeoff. It is not an optimized
 operating point.
 
 \section{Conclusion}
@@ -275,9 +291,14 @@ step is to widen the task distribution beyond deterministic items and to study g
 the catch rate while lowering false alarms.
 
 \section*{Artifact and Reproducibility}
-The generator, oracle, verifier harness, guardrail, and scoring are released as a self-contained
-repository with a deterministic mock verifier for continuous integration and a real-provider mode.
-All content is synthetic.
+The generator, oracle, verifier harness, guardrail, and scoring are packaged as a self-contained,
+MIT-licensed repository with a deterministic mock verifier for continuous integration and a
+real-provider mode. All content is synthetic. The repository will be made public on acceptance.
+
+\section*{Acknowledgment of AI Assistance}
+An AI coding assistant was used to help implement the synthetic harness and to draft and edit the
+manuscript. The author designed the study, verified all results against the committed run logs, and
+takes responsibility for the content.
 
 \begin{thebibliography}{00}
 \bibitem{ragcollapse} G. Druck and E. Smith, ``RAG Collapse: LLM Responses Collapse When Retrieved
@@ -292,8 +313,12 @@ Disappearance, Distortion and a Validation Protocol,'' arXiv:2607.13707, 2026.
 in LLM Test Generation under the Oracle Problem,'' arXiv:2608.19626, 2026.
 \bibitem{evomal} X. Wu \emph{et al.}, ``EVOMAL: Self-Poisoning in Self-Evolving Coding Agents,''
 arXiv:2608.25776, 2026.
-\bibitem{groundtruthfirst} ``Ground Truth First: A Longitudinal Evaluation Instrument for Agent
-Memory,'' arXiv:2607.21962, 2026.
+\bibitem{selfauthored} D. Guo, C. Cao, F. Yuan, Y. Wang, Y. Wang, and D. Wang, ``Self-Authored
+Verification Is Unreliable in Heuristic Self-Improving Agents,'' arXiv:2607.24300, 2026.
+\bibitem{seacert} B. Sengupta, ``Self-Evolving Agents with Anytime-Valid Certificates,''
+arXiv:2607.00871, 2026.
+\bibitem{groundtruthfirst} Q. Spencer, ``Ground Truth First: A Longitudinal Evaluation Instrument
+for Agent Memory, and the Tenure Crossover in Memory-Architecture Rankings,'' arXiv:2607.21962, 2026.
 \end{thebibliography}
 
 \end{document}
