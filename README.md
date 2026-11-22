@@ -1,9 +1,12 @@
 # eval-provenance-taint
 
-A self-contained synthetic benchmark for **eval-set self-poisoning**: the failure where a
+A self-contained synthetic benchmark for **eval-set self-contamination through provenance taint**: the failure where a
 verifier writes its own model-mediated inference into an evaluation log / gold key, and a
 downstream gold-dependent decision later consumes that self-authored value **as ground truth**,
-within a single pipeline.
+within a single pipeline. It needs no adversary.
+
+Paper: *Measuring Eval-Set Self-Contamination: A Synthetic Benchmark for Provenance Taint in On-Device
+Verifier Pipelines*, IEEE ICCE 2027. Which result file backs which number: `results/MANIFEST.md`.
 
 The benchmark measures a **real LLM verifier's** decisions against an **immutable external
 oracle** that is held outside the writable pipeline. It is fully synthetic — no external dataset,
